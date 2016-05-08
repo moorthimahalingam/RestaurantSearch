@@ -21,39 +21,19 @@ public class SearchEngineController {
 	
 	RestaurantSearchRequest request = new RestaurantSearchRequest();
 	
-//	{allpossible} means combination/probablity of zipcode+city+cuisine but this should be always in this sequence
-	
-	@RequestMapping(value="/search/{allpossible}")
-	public String searchRestaurantsByAllPossibleWay(RestaurantSearchRequest request , BindingResult result) throws RestaurantSearchException {
-		String response = searchEngineService.searchRestaurants(request);
+	@RequestMapping(value="/location" , method= RequestMethod.GET)
+	public String searchNearByRestaurantsByLocation(@RequestParam(value="latitude") Double latitude,
+			@RequestParam(value="longtitude") Double longtitude) throws RestaurantSearchException {
+		String response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude);
 		return response;
 	}
+
 	
-	@RequestMapping(value="/searchbyzipcode" , method=RequestMethod.GET)
+	@RequestMapping(value="/zipcode" , method=RequestMethod.GET)
 	public String searchRestaurantsByZipCode(@RequestParam (value="zipcode") String zipcode) throws RestaurantSearchException {
-		String response = searchEngineService.searchRestaurants(request);
+		String response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode);
 		return response;
 	}
-	
-	@RequestMapping(value="/searchsbycity" , method=RequestMethod.GET)
-	public String searchRestaurantByCity(@RequestParam (value="city") String city) throws RestaurantSearchException {
-		String response = searchEngineService.searchRestaurants(request);
-		return response;
-	}
-	
-	@RequestMapping(value="/searchbycuisine" , method=RequestMethod.GET)
-	public String searchRestaurantsByCuisine(@RequestParam (value="cuisine") String cuisine) throws RestaurantSearchException {
-		String response = searchEngineService.searchRestaurants(request);
-		return response;
-	}
-	
-	@RequestMapping(value="/searchbylocation" , method=RequestMethod.GET)
-	public String searchRestaurantsByLocation(@RequestParam (value="longtitude") String longtitude, 
-			@RequestParam (value="latitude") String latitude) throws RestaurantSearchException {
-		String response = searchEngineService.searchRestaurants(request);
-		return response;
-	}
-	
 
 	@RequestMapping(value="/fav_restaurant" , method=RequestMethod.GET)
 	public String listFavRestaurantForCustomer(
@@ -62,7 +42,23 @@ public class SearchEngineController {
 		return response;
 		
 	}
+	
+	@RequestMapping(value="/populateMenus" , method=RequestMethod.GET)
+	public String retrieveMenusList(@RequestParam(value="searchText") String searchText) throws RestaurantSearchException {
+		return null;
+	}
+	
 
+	@RequestMapping(value="/restaurantMenu" , method=RequestMethod.GET)
+	public String retrieveAllAvailableMenusForTheRestaurant(@RequestParam(value="restaurantId") Integer restaurantId) throws RestaurantSearchException {
+		return null;
+	}
+	
+	
+	@RequestMapping(value="/restaurantsForAMenu" , method=RequestMethod.GET)
+	public String retrieveAllRestaurantForAMenu(@RequestParam(value="menuName") String menuName) throws RestaurantSearchException {
+		return null;
+	}
 	
 	@ExceptionHandler(RestaurantSearchException.class)
 	public String exceptionHandler(RestaurantSearchException exception) {

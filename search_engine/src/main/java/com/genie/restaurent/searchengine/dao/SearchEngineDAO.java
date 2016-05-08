@@ -5,7 +5,9 @@ import com.genie.restaurent.searchengine.model.RestaurantSearchRequest;
 
 public interface SearchEngineDAO {
 
-	public String Searchrestaurants(RestaurantSearchRequest request) throws RestaurantSearchException;
-	
+	public String retrieveRestaurantsByLocation(Double latitude, Double longitude) throws RestaurantSearchException;
+
+	public String retrieveRestaurantsByPostalCode(String PostalCode) throws RestaurantSearchException;
+
 	public String listCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
 }

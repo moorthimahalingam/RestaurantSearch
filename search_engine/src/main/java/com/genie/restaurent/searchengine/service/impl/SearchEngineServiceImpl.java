@@ -17,14 +17,20 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 	@Inject
 	SearchEngineDAO searchEngineDAO;
 	
-	public String searchRestaurants(RestaurantSearchRequest request) throws RestaurantSearchException {
-		String response = searchEngineDAO.Searchrestaurants(request);
-		return response;
-	}
 
 	public String seachCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException {
 		String response = searchEngineDAO.listCustomerFavRestaurants(customerId);
 		return response;
+	}
+
+	public String retrieveNearByRestaurantsByLocation(Double latitude, Double longtitude) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public String retrieveNearByRestaurantsByZipCode(String zipCode) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

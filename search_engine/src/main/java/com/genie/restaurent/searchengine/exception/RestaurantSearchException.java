@@ -15,4 +15,22 @@ public class RestaurantSearchException extends Exception {
 	public RestaurantSearchException(String message) {
 		super(message);
 	}
+	
+	public RestaurantSearchException(Exception exception) {
+		super(exception);
+	}
+	
+	public RestaurantSearchException(Throwable throwable) {
+		super(throwable);
+	}
+	
+	public RestaurantSearchException(Exception exception, String methodName) {
+		super(exception);
+	}
+	
+	public RestaurantSearchException(Throwable throwable, String methodName) {
+		super(throwable);
+	}
+	
 }
+
