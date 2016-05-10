@@ -16,6 +16,8 @@ public class RestaurantsAndMenus {
 	private String customerId;
 	@JsonProperty("machinfo")
 	private String machinfo;
+	@JsonProperty("cuisines")
+	private List<Cuisine> cuisines = new ArrayList<Cuisine>();
 	@JsonProperty("Restaurants")
 	private List<Restaurant> Restaurants = new ArrayList<Restaurant>();
 	@JsonIgnore
@@ -61,6 +63,25 @@ public class RestaurantsAndMenus {
 
 	/**
 	 * 
+	 * @return The cuisines
+	 */
+	@JsonProperty("cuisines")
+	public List<Cuisine> getCuisines() {
+		return cuisines;
+	}
+
+	/**
+	 * 
+	 * @param cuisines
+	 *            The cuisines
+	 */
+	@JsonProperty("cuisines")
+	public void setCuisines(List<Cuisine> cuisines) {
+		this.cuisines = cuisines;
+	}
+
+	/**
+	 * 
 	 * @return The Restaurants
 	 */
 	@JsonProperty("Restaurants")
@@ -87,4 +108,5 @@ public class RestaurantsAndMenus {
 	public void setAdditionalProperty(String name, Object value) {
 		this.additionalProperties.put(name, value);
 	}
+
 }

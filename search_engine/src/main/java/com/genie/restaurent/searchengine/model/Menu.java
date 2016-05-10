@@ -1,5 +1,6 @@
 package com.genie.restaurent.searchengine.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +11,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Menu {
+public class Menu implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3317481274629395792L;
 	@JsonProperty("menu_id")
 	private String menuId;
 	@JsonProperty("name")
@@ -26,8 +31,6 @@ public class Menu {
 	private String imageURL;
 	@JsonProperty("menuCategory")
 	private String menuCategory;
-	@JsonProperty("cuisine_id")
-	private Integer cuisineId;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -162,25 +165,6 @@ public class Menu {
 	@JsonProperty("menuCategory")
 	public void setMenuCategory(String menuCategory) {
 		this.menuCategory = menuCategory;
-	}
-
-	/**
-	 * 
-	 * @return The cuisineId
-	 */
-	@JsonProperty("cuisine_id")
-	public Integer getCuisineId() {
-		return cuisineId;
-	}
-
-	/**
-	 * 
-	 * @param cuisineId
-	 *            The cuisine_id
-	 */
-	@JsonProperty("cuisine_id")
-	public void setCuisineId(Integer cuisineId) {
-		this.cuisineId = cuisineId;
 	}
 
 	@JsonAnyGetter
