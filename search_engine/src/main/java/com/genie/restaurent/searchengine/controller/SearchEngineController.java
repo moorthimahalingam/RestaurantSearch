@@ -2,7 +2,6 @@ package com.genie.restaurent.searchengine.controller;
 
 import javax.inject.Inject;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
+import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantSearchRequest;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
@@ -22,16 +22,17 @@ public class SearchEngineController {
 	RestaurantSearchRequest request = new RestaurantSearchRequest();
 	
 	@RequestMapping(value="/location" , method= RequestMethod.GET)
-	public String searchNearByRestaurantsByLocation(@RequestParam(value="latitude") Double latitude,
+	public NearbyRestaurants searchNearByRestaurantsByLocation(@RequestParam(value="latitude") Double latitude,
 			@RequestParam(value="longtitude") Double longtitude) throws RestaurantSearchException {
-		String response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude);
+		
+		NearbyRestaurants response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude);
 		return response;
 	}
 
 	
 	@RequestMapping(value="/zipcode" , method=RequestMethod.GET)
-	public String searchRestaurantsByZipCode(@RequestParam (value="zipcode") String zipcode) throws RestaurantSearchException {
-		String response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode);
+	public NearbyRestaurants searchRestaurantsByZipCode(@RequestParam (value="zipcode") String zipcode) throws RestaurantSearchException {
+		NearbyRestaurants response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode);
 		return response;
 	}
 

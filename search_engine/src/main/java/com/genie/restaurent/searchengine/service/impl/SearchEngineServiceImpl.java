@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
+import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantSearchRequest;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
@@ -23,12 +24,12 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 		return response;
 	}
 
-	public String retrieveNearByRestaurantsByLocation(Double latitude, Double longtitude) {
+	public NearbyRestaurants retrieveNearByRestaurantsByLocation(Double latitude, Double longtitude) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public String retrieveNearByRestaurantsByZipCode(String zipCode) {
+	public NearbyRestaurants retrieveNearByRestaurantsByZipCode(String zipCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

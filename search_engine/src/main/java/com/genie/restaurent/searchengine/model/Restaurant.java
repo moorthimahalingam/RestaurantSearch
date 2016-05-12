@@ -1,10 +1,9 @@
 package com.genie.restaurent.searchengine.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,14 +21,24 @@ public class Restaurant implements Serializable {
 	private String name;
 	@JsonProperty("restaurant_id")
 	private Integer restaurantId;
-	@JsonProperty("milesFromCustomerLocation")
-	private Double milesFromCustomerLocation;
+	@JsonProperty("restaurant_image_url")
+	private String restaurantImageUrl;
+	@JsonProperty("subscribtion_code")
+	private String subscribtionCode;
+	@JsonProperty("minimumorder")
+	private Integer minimumorder;
+	@JsonProperty("delivery_fee")
+	private Integer deliveryFee;
+	@JsonProperty("restaurant_description")
+	private String restaurantDescription;
+	@JsonProperty("rating")
+	private Integer rating;
+	@JsonProperty("pricing_category")
+	private Integer pricingCategory;
+	@JsonProperty("distance")
+	private Double distance;
 	@JsonProperty("cuisine_id")
 	private Integer cuisineId;
-	@JsonProperty("Menus")
-	private List<Menu> Menus = new ArrayList<Menu>();
-	@JsonProperty("milesfromcurrentlocation")
-	private Double milesfromcurrentlocation;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -73,21 +82,154 @@ public class Restaurant implements Serializable {
 
 	/**
 	 * 
-	 * @return The milesFromCustomerLocation
+	 * @return The restaurantImageUrl
 	 */
-	@JsonProperty("milesFromCustomerLocation")
-	public Double getMilesFromCustomerLocation() {
-		return milesFromCustomerLocation;
+	@JsonProperty("restaurant_image_url")
+	public String getRestaurantImageUrl() {
+		return restaurantImageUrl;
 	}
 
 	/**
 	 * 
-	 * @param milesFromCustomerLocation
-	 *            The milesFromCustomerLocation
+	 * @param restaurantImageUrl
+	 *            The restaurant_image_url
 	 */
-	@JsonProperty("milesFromCustomerLocation")
-	public void setMilesFromCustomerLocation(Double milesFromCustomerLocation) {
-		this.milesFromCustomerLocation = milesFromCustomerLocation;
+	@JsonProperty("restaurant_image_url")
+	public void setRestaurantImageUrl(String restaurantImageUrl) {
+		this.restaurantImageUrl = restaurantImageUrl;
+	}
+
+	/**
+	 * 
+	 * @return The subscribtionCode
+	 */
+	@JsonProperty("subscribtion_code")
+	public String getSubscribtionCode() {
+		return subscribtionCode;
+	}
+
+	/**
+	 * 
+	 * @param subscribtionCode
+	 *            The subscribtion_code
+	 */
+	@JsonProperty("subscribtion_code")
+	public void setSubscribtionCode(String subscribtionCode) {
+		this.subscribtionCode = subscribtionCode;
+	}
+
+	/**
+	 * 
+	 * @return The minimumorder
+	 */
+	@JsonProperty("minimumorder")
+	public Integer getMinimumorder() {
+		return minimumorder;
+	}
+
+	/**
+	 * 
+	 * @param minimumorder
+	 *            The minimumorder
+	 */
+	@JsonProperty("minimumorder")
+	public void setMinimumorder(Integer minimumorder) {
+		this.minimumorder = minimumorder;
+	}
+
+	/**
+	 * 
+	 * @return The deliveryFee
+	 */
+	@JsonProperty("delivery_fee")
+	public Integer getDeliveryFee() {
+		return deliveryFee;
+	}
+
+	/**
+	 * 
+	 * @param deliveryFee
+	 *            The delivery_fee
+	 */
+	@JsonProperty("delivery_fee")
+	public void setDeliveryFee(Integer deliveryFee) {
+		this.deliveryFee = deliveryFee;
+	}
+
+	/**
+	 * 
+	 * @return The restaurantDescription
+	 */
+	@JsonProperty("restaurant_description")
+	public String getRestaurantDescription() {
+		return restaurantDescription;
+	}
+
+	/**
+	 * 
+	 * @param restaurantDescription
+	 *            The restaurant_description
+	 */
+	@JsonProperty("restaurant_description")
+	public void setRestaurantDescription(String restaurantDescription) {
+		this.restaurantDescription = restaurantDescription;
+	}
+
+	/**
+	 * 
+	 * @return The rating
+	 */
+	@JsonProperty("rating")
+	public Integer getRating() {
+		return rating;
+	}
+
+	/**
+	 * 
+	 * @param rating
+	 *            The rating
+	 */
+	@JsonProperty("rating")
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+
+	/**
+	 * 
+	 * @return The pricingCategory
+	 */
+	@JsonProperty("pricing_category")
+	public Integer getPricingCategory() {
+		return pricingCategory;
+	}
+
+	/**
+	 * 
+	 * @param pricingCategory
+	 *            The pricing_category
+	 */
+	@JsonProperty("pricing_category")
+	public void setPricingCategory(Integer pricingCategory) {
+		this.pricingCategory = pricingCategory;
+	}
+
+	/**
+	 * 
+	 * @return The distance
+	 */
+	@JsonProperty("distance")
+	public Double getDistance() {
+		return distance;
+	}
+
+	/**
+	 * 
+	 * @param distance
+	 *            The distance
+	 */
+	@JsonProperty("distance")
+	public void setDistance(Double distance) {
+		this.distance = distance;
 	}
 
 	/**
@@ -107,44 +249,6 @@ public class Restaurant implements Serializable {
 	@JsonProperty("cuisine_id")
 	public void setCuisineId(Integer cuisineId) {
 		this.cuisineId = cuisineId;
-	}
-
-	/**
-	 * 
-	 * @return The Menus
-	 */
-	@JsonProperty("Menus")
-	public List<Menu> getMenus() {
-		return Menus;
-	}
-
-	/**
-	 * 
-	 * @param Menus
-	 *            The Menus
-	 */
-	@JsonProperty("Menus")
-	public void setMenus(List<Menu> Menus) {
-		this.Menus = Menus;
-	}
-
-	/**
-	 * 
-	 * @return The milesfromcurrentlocation
-	 */
-	@JsonProperty("milesfromcurrentlocation")
-	public Double getMilesfromcurrentlocation() {
-		return milesfromcurrentlocation;
-	}
-
-	/**
-	 * 
-	 * @param milesfromcurrentlocation
-	 *            The milesfromcurrentlocation
-	 */
-	@JsonProperty("milesfromcurrentlocation")
-	public void setMilesfromcurrentlocation(Double milesfromcurrentlocation) {
-		this.milesfromcurrentlocation = milesfromcurrentlocation;
 	}
 
 	@JsonAnyGetter
