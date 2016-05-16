@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
+import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
-import com.genie.restaurent.searchengine.model.RestaurantSearchRequest;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
 @Named
@@ -17,21 +17,21 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 
 	@Inject
 	SearchEngineDAO searchEngineDAO;
-	
 
-	public String seachCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException {
-		String response = searchEngineDAO.listCustomerFavRestaurants(customerId);
+	public CustomerFavRestaurants seachCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException {
+		CustomerFavRestaurants response = searchEngineDAO.listCustomerFavRestaurants(customerId);
 		return response;
 	}
 
-	public NearbyRestaurants retrieveNearByRestaurantsByLocation(Double latitude, Double longtitude) {
-		// TODO Auto-generated method stub
-		return null;
+	public NearbyRestaurants retrieveNearByRestaurantsByLocation(Double latitude, Double longitude)
+			throws RestaurantSearchException {
+		NearbyRestaurants nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByLocation(latitude, longitude);
+		return nearbyRestaurants;
 	}
-	
-	public NearbyRestaurants retrieveNearByRestaurantsByZipCode(String zipCode) {
-		// TODO Auto-generated method stub
-		return null;
+
+	public NearbyRestaurants retrieveNearByRestaurantsByZipCode(String zipCode) throws RestaurantSearchException {
+		NearbyRestaurants nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByPostalCode(zipCode);
+		return nearbyRestaurants;
 	}
 
 }
