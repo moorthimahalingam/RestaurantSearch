@@ -1,5 +1,9 @@
 package com.genie.restaurent.searchengine.dao.impl;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -7,6 +11,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
@@ -62,22 +67,44 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	 * and longitude for the input zipcode.
 	 * 
 	 */
-	public NearbyRestaurants retrieveRestaurantsByPostalCode(String PostalCode) throws RestaurantSearchException {
+	public NearbyRestaurants retrieveRestaurantsByPostalCode(String postalCode) throws RestaurantSearchException {
 
 		// call the stored proc to get the latitude and longitude for the input
 		// postal code.
+		List<Double> locationdetails = null;
 		NearbyRestaurants nearbyRestaurants = null;
 		try {
+			locationdetails = jdbcTemplate.queryForObject("select latitude, longitude from restaurant where zipcode=?",
+					new Object[] { postalCode }, new RowMapper<List<Double>>() {
+
+						public List<Double> mapRow(ResultSet rs, int rowNum) throws SQLException {
+							List<Double> resultList = new ArrayList<Double>();
+							resultList.add(rs.getDouble("latitude"));
+							resultList.add(rs.getDouble("longitude"));
+							return resultList;
+						}
+				
+			});
+			if (locationdetails != null && !locationdetails.isEmpty()) {
+				Double latitude = locationdetails.get(0);
+				Double longitude = locationdetails.get(1);
+				nearbyRestaurants = retrieveRestaurantsByLocation(latitude, longitude);
+			}
+		} catch (Exception e) {
+			throw new RestaurantSearchException(e, "retrieveRestaurantsByPostalCode");
+		}
+		
+/*		try {
 			jdbcCall = new SimpleJdbcCall(jdbcTemplate)
 					.withProcedureName("retrieveLatitudeAndlongitudeForTheInput zipcode");
-			Map<String, Object> location = jdbcCall.execute(new MapSqlParameterSource().addValue("zipcode", "ADFD123"));
+			Map<String, Object> location = jdbcCall.execute(new MapSqlParameterSource().addValue("zipcode", postalCode));
 			Double latitude = (Double) location.get("latitude");
 			Double longitude = (Double) location.get("longitude");
 			nearbyRestaurants = retrieveRestaurantsByLocation(latitude, longitude);
 			
 		} catch (Exception e) {
 			throw new RestaurantSearchException(e, "retrieveRestaurantsByPostalCode");
-		} 
+		} */
 		return nearbyRestaurants;
 	}
 

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
-import com.genie.restaurent.searchengine.model.RestaurantSearchRequest;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
 @RestController
@@ -19,8 +18,6 @@ public class SearchEngineController {
 
 	@Inject
 	SearchEngineService searchEngineService;
-
-	RestaurantSearchRequest request = new RestaurantSearchRequest();
 
 	@RequestMapping(value = "/location", method = RequestMethod.GET)
 	public NearbyRestaurants searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
