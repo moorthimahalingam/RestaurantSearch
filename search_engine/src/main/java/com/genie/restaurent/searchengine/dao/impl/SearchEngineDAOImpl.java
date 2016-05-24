@@ -45,17 +45,17 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		 * search bar.
 		 */
 		// Call the stored proc to retrieve this..
-		SqlParameterSource inputParam = new MapSqlParameterSource().addValue("latitude", latitude).addValue("longitude",
-				longitude);
+		SqlParameterSource inputParam = new MapSqlParameterSource().addValue("mylat", latitude).addValue("mylon",
+				longitude).addValue("dist", 3);
 		jdbcCall = new SimpleJdbcCall(jdbcTemplate);
 
-		Map<String, Object> nearbyRestaurantsAndMenus = jdbcCall.withProcedureName("stored proc name")
+		Map<String, Object> nearbyRestaurantsAndMenus = jdbcCall.withProcedureName("get_restaurant_and_menus_by_dist")
 				.execute(inputParam);
 		// Load the data into elastic search
 
 		// Call another stored proc to retrieve only near by restaurants,
 		// cuisine
-		Map<String, Object> nearbyRestaurantsData = jdbcCall.withProcedureName("Stored Proc name").execute(inputParam);
+		Map<String, Object> nearbyRestaurantsData = jdbcCall.withProcedureName("get_restaurant_by_dist").execute(inputParam);
 
 		NearbyRestaurants nearbyRestaurants = null;
 		jdbcCall = null;
