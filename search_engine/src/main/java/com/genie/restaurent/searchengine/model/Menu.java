@@ -17,10 +17,30 @@ public class Menu implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -3317481274629395792L;
+	@JsonProperty("restaurant_id")
+	private Integer restaurantId;
 	@JsonProperty("menu_id")
 	private String menuId;
 	@JsonProperty("name")
 	private String name;
+	@JsonProperty("size")
+	private Integer size;
+	@JsonProperty("special_notes")
+	private String specialNotes;
+	@JsonProperty("item_available")
+	private String itemAvailable;
+	@JsonProperty("cuisine_id")
+	private Integer cuisineId;
+	@JsonProperty("cuisine_name")
+	private String cuisineName;
+	@JsonProperty("category_id")
+	private Integer categoryId;
+	@JsonProperty("category_name")
+	private String categoryName;
+	@JsonProperty("customer_id")
+	private Integer customerId;
+	@JsonProperty("is_liked")
+	private String liked;
 	@JsonProperty("description")
 	private String description;
 	@JsonProperty("price")
@@ -29,8 +49,11 @@ public class Menu implements Serializable {
 	private String spiceLevel;
 	@JsonProperty("imageURL")
 	private String imageURL;
-	@JsonProperty("menuCategory")
-	private String menuCategory;
+	@JsonProperty("default_spicyLevel")
+	private String defaultSpicyLevel;
+	@JsonProperty("isFlagshipItem")
+	private String FlagshipItem;
+
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -148,23 +171,124 @@ public class Menu implements Serializable {
 		this.imageURL = imageURL;
 	}
 
-	/**
-	 * 
-	 * @return The menuCategory
-	 */
-	@JsonProperty("menuCategory")
-	public String getMenuCategory() {
-		return menuCategory;
+	@JsonProperty("restaurant_id")
+	public Integer getRestaurantId() {
+		return restaurantId;
 	}
 
-	/**
-	 * 
-	 * @param menuCategory
-	 *            The menuCategory
-	 */
-	@JsonProperty("menuCategory")
-	public void setMenuCategory(String menuCategory) {
-		this.menuCategory = menuCategory;
+	@JsonProperty("restaurant_id")
+	public void setRestaurantId(Integer restaurantId) {
+		this.restaurantId = restaurantId;
+	}
+
+	@JsonProperty("size")
+	public Integer getSize() {
+		return size;
+	}
+
+	@JsonProperty("size")
+	public void setSize(Integer size) {
+		this.size = size;
+	}
+
+	@JsonProperty("special_notes")
+	public String getSpecialNotes() {
+		return specialNotes;
+	}
+	
+	@JsonProperty("special_notes")
+	public void setSpecialNotes(String specialNotes) {
+		this.specialNotes = specialNotes;
+	}
+
+	@JsonProperty("item_available")
+	public String getItemAvailable() {
+		return itemAvailable;
+	}
+
+	@JsonProperty("item_available")
+	public void setItemAvailable(String itemAvailable) {
+		this.itemAvailable = itemAvailable;
+	}
+
+	@JsonProperty("cuisine_id")
+	public Integer getCuisineId() {
+		return cuisineId;
+	}
+
+	@JsonProperty("cuisine_id")
+	public void setCuisineId(Integer cuisineId) {
+		this.cuisineId = cuisineId;
+	}
+
+	@JsonProperty("cuisine_name")
+	public String getCuisineName() {
+		return cuisineName;
+	}
+
+	@JsonProperty("cuisine_name")
+	public void setCuisineName(String cuisineName) {
+		this.cuisineName = cuisineName;
+	}
+
+	@JsonProperty("category_id")
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	@JsonProperty("category_id")
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	@JsonProperty("category_name")
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	@JsonProperty("category_name")
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	@JsonProperty("customer_id")
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	@JsonProperty("customer_id")
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
+	}
+
+	@JsonProperty("is_liked")
+	public String getLiked() {
+		return liked;
+	}
+
+	@JsonProperty("is_liked")
+	public void setLiked(String liked) {
+		this.liked = liked;
+	}
+
+	@JsonProperty("default_spicyLevel")
+	public String getDefaultSpicyLevel() {
+		return defaultSpicyLevel;
+	}
+
+	@JsonProperty("default_spicyLevel")
+	public void setDefaultSpicyLevel(String defaultSpicyLevel) {
+		this.defaultSpicyLevel = defaultSpicyLevel;
+	}
+
+	@JsonProperty("isFlagshipItem")
+	public String getFlagshipItem() {
+		return FlagshipItem;
+	}
+
+	@JsonProperty("isFlagshipItem")
+	public void setFlagshipItem(String flagshipItem) {
+		FlagshipItem = flagshipItem;
 	}
 
 	@JsonAnyGetter

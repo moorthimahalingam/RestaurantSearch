@@ -1,7 +1,10 @@
 package com.genie.restaurent.searchengine.dao;
 
+import java.util.List;
+
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 
 public interface SearchEngineDAO {
@@ -11,4 +14,7 @@ public interface SearchEngineDAO {
 	public NearbyRestaurants retrieveRestaurantsByPostalCode(String PostalCode) throws RestaurantSearchException;
 
 	public CustomerFavRestaurants listCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
+	
+	public List<Menu> retrieveMenus(Integer restaurantId) throws RestaurantSearchException;
+	
 }

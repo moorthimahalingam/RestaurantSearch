@@ -28,7 +28,7 @@ public class SpringConfig {
 	
 	public DataSource getDataSource() {
 		JndiObjectFactoryBean jndi = new JndiObjectFactoryBean();
-//		jndi.setExpectedType(DataSource.class);
+		jndi.setExpectedType(DataSource.class);
 		jndi.setJndiName("java:comp/env/jdbc/MyGogenieDB");
 		DataSource dataSource = (DataSource) jndi.getObject();
 		return dataSource;

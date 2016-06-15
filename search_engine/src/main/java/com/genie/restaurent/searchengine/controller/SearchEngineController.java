@@ -1,5 +1,7 @@
 package com.genie.restaurent.searchengine.controller;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
+import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
 @RestController
@@ -19,7 +23,7 @@ public class SearchEngineController {
 	@Inject
 	SearchEngineService searchEngineService;
 
-	@RequestMapping(value = "/location", method = RequestMethod.GET)
+	@RequestMapping(value = "/nearbyRestaurants", method = RequestMethod.GET)
 	public NearbyRestaurants searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
 			@RequestParam(value = "longtitude") Double longtitude) throws RestaurantSearchException {
 
@@ -27,7 +31,7 @@ public class SearchEngineController {
 		return response;
 	}
 
-	@RequestMapping(value = "/zipcode", method = RequestMethod.GET)
+	@RequestMapping(value = "/zipcodeBasedRestaurants", method = RequestMethod.GET)
 	public NearbyRestaurants searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode)
 			throws RestaurantSearchException {
 		NearbyRestaurants response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode);
@@ -37,7 +41,8 @@ public class SearchEngineController {
 	@RequestMapping(value = "/fav_restaurant", method = RequestMethod.GET)
 	public CustomerFavRestaurants listFavRestaurantForCustomer(@RequestParam(value = "customerId") String customerId)
 			throws RestaurantSearchException {
-		CustomerFavRestaurants favRestaurants = searchEngineService.seachCustomerFavRestaurants(new Integer(customerId));
+		CustomerFavRestaurants favRestaurants = searchEngineService
+				.seachCustomerFavRestaurants(new Integer(customerId));
 		return favRestaurants;
 	}
 
@@ -48,8 +53,9 @@ public class SearchEngineController {
 	}
 
 	@RequestMapping(value = "/restaurantMenu", method = RequestMethod.GET)
-	public String retrieveAllAvailableMenusForTheRestaurant(@RequestParam(value = "restaurantId") Integer restaurantId)
-			throws RestaurantSearchException {
+	public List<Menu> retrieveAllAvailableMenusForTheRestaurant(
+			@RequestParam(value = "restaurantId") Integer restaurantId) throws RestaurantSearchException {
+		
 		return null;
 	}
 

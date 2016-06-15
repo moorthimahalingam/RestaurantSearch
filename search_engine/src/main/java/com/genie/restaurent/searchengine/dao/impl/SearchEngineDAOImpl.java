@@ -3,8 +3,10 @@ package com.genie.restaurent.searchengine.dao.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -20,7 +22,9 @@ import org.springframework.stereotype.Repository;
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
+import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 
 @Repository
 public class SearchEngineDAOImpl implements SearchEngineDAO {
@@ -114,5 +118,19 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		Map<String, Object> dbResults = jdbcCall.execute(new MapSqlParameterSource().addValue("cust_id", customerId)) ;
 		CustomerFavRestaurants customerFavRestaurants = null;
 		return customerFavRestaurants;
+	}
+
+	public List<Menu> retrieveMenus(Integer restaurantId) throws RestaurantSearchException {
+		jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_restaurant_menu");
+		List<Menu> menuslist = new ArrayList<Menu>();
+		Map<String, Object> menus = jdbcCall.execute(new MapSqlParameterSource("restaurantId", restaurantId));
+		Iterator<Entry<String, Object>> menuIterator = menus.entrySet().iterator();
+		while (menuIterator.hasNext()) {
+			Map.Entry<String, Object> menuResult = (Map.Entry<String, Object>) menuIterator.next();
+			Menu menu = new Menu();
+			
+		}
+		
+		return null;
 	}
 }
