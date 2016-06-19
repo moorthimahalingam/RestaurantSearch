@@ -25,8 +25,8 @@ public class NearbyRestaurants implements Serializable {
 	private String machinfo;
 	@JsonProperty("cuisines")
 	private List<Cuisine> cuisines = new ArrayList<Cuisine>();
-	@JsonProperty("Restaurants")
-	private List<Restaurant> Restaurants = new ArrayList<Restaurant>();
+	@JsonProperty("restaurants")
+	private List<Restaurant> restaurants = new ArrayList<Restaurant>();
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -91,9 +91,9 @@ public class NearbyRestaurants implements Serializable {
 	 * 
 	 * @return The Restaurants
 	 */
-	@JsonProperty("Restaurants")
+	@JsonProperty("restaurants")
 	public List<Restaurant> getRestaurants() {
-		return Restaurants;
+		return restaurants;
 	}
 
 	/**
@@ -101,9 +101,9 @@ public class NearbyRestaurants implements Serializable {
 	 * @param Restaurants
 	 *            The Restaurants
 	 */
-	@JsonProperty("Restaurants")
-	public void setRestaurants(List<Restaurant> Restaurants) {
-		this.Restaurants = Restaurants;
+	@JsonProperty("restaurants")
+	public void setRestaurants(List<Restaurant> restaurants) {
+		this.restaurants = restaurants;
 	}
 
 	@JsonAnyGetter

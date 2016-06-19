@@ -7,6 +7,7 @@ import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
+import com.genie.restaurent.searchengine.model.Reviews;
 
 public interface SearchEngineService {
 	
@@ -17,4 +18,6 @@ public interface SearchEngineService {
 	public CustomerFavRestaurants seachCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
 	
 	public List<Menu> retrieveMenus(Integer restaurantId) throws RestaurantSearchException;
+	
+	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException;
 }

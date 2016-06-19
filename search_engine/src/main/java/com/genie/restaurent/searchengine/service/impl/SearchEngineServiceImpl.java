@@ -12,7 +12,7 @@ import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
-import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
+import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
 @Named
@@ -39,7 +39,13 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 	}
 
 	public List<Menu> retrieveMenus(Integer restaurantId) throws RestaurantSearchException {
-		return null;
+		List<Menu> menus = searchEngineDAO.retrieveMenus(restaurantId);
+		return menus;
+	}
+
+	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException {
+		List<Reviews> reviews = searchEngineDAO.retrieveReviews(restaurantId);
+		return reviews;
 	}
 
 }

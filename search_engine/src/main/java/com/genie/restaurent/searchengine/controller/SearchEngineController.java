@@ -15,6 +15,7 @@ import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
+import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
 @RestController
@@ -65,6 +66,10 @@ public class SearchEngineController {
 		return null;
 	}
 
+	@RequestMapping(value="/reviews", method=RequestMethod.GET)
+	public Reviews retrieveReviews(@RequestParam(value="restaurantId") Integer restaurantId) throws RestaurantSearchException {
+		return null;
+	}
 	@ExceptionHandler(RestaurantSearchException.class)
 	public String exceptionHandler(RestaurantSearchException exception) {
 		return "Failed";

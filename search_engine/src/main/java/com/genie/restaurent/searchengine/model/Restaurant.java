@@ -1,7 +1,9 @@
 package com.genie.restaurent.searchengine.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -39,6 +41,19 @@ public class Restaurant implements Serializable {
 	private Double distance;
 	@JsonProperty("cuisine_id")
 	private Integer cuisineId;
+	@JsonProperty("menu")
+	private List<Menu> menus = new ArrayList<Menu>();
+	
+	@JsonProperty("menu")
+	public List<Menu> getMenus() {
+		return menus;
+	}
+
+	@JsonProperty("menu")
+	public void setMenus(List<Menu> menus) {
+		this.menus = menus;
+	}
+
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

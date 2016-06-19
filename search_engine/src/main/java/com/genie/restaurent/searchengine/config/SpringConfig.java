@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -26,6 +27,7 @@ public class SpringConfig {
 		return restTemplate;
 	}
 	
+	@Bean(name="gogenieDataSource")
 	public DataSource getDataSource() {
 		JndiObjectFactoryBean jndi = new JndiObjectFactoryBean();
 		jndi.setExpectedType(DataSource.class);
@@ -33,4 +35,6 @@ public class SpringConfig {
 		DataSource dataSource = (DataSource) jndi.getObject();
 		return dataSource;
 	}
+	
+	
 }
