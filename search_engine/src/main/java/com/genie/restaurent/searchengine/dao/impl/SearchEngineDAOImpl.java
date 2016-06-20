@@ -24,7 +24,9 @@ import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
+import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
+import com.genie.restaurent.searchengine.service.util.RestaurantMenuExtractor;
 import com.genie.restaurent.searchengine.service.util.RestaurantResultExtractor;
 
 @Repository
@@ -124,14 +126,11 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		return customerFavRestaurants;
 	}
 
-	public List<Menu> retrieveMenus(Integer restaurantId) throws RestaurantSearchException {
-		List<Menu> menus = (List<Menu>)namedParameterJdbcTemplate.query("{call get_restaurant_menu(:restaurantId)}",
-				new MapSqlParameterSource().addValue("restaurantId", restaurantId), new ResultSetExtractor<List<Menu>>() {
-
-					public List<Menu> extractData(ResultSet rs) throws SQLException, DataAccessException {
-						return null;
-					}
-				});
+	public RestaurantMenus retrieveMenusForARestaurant(Integer restaurantId) throws RestaurantSearchException {
+		MapSqlParameterSource inputParam = new MapSqlParameterSource();
+		inputParam.addValue("restaurantId", restaurantId);
+		RestaurantMenus menus = (RestaurantMenus)namedParameterJdbcTemplate.query("{call get_restaurant_menu(:restaurantId)}",
+				inputParam, new RestaurantMenuExtractor());
 		return menus;
 	}
 

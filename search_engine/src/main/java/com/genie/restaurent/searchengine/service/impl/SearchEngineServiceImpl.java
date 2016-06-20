@@ -12,6 +12,7 @@ import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.NearbyRestaurants;
+import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
@@ -38,8 +39,8 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 		return nearbyRestaurants;
 	}
 
-	public List<Menu> retrieveMenus(Integer restaurantId) throws RestaurantSearchException {
-		List<Menu> menus = searchEngineDAO.retrieveMenus(restaurantId);
+	public RestaurantMenus retrieveARestaurantMenus(Integer restaurantId) throws RestaurantSearchException {
+		RestaurantMenus menus = searchEngineDAO.retrieveMenusForARestaurant(restaurantId);
 		return menus;
 	}
 
