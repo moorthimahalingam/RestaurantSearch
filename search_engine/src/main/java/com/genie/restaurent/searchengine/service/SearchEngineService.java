@@ -14,7 +14,7 @@ public interface SearchEngineService {
 	
 	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode,String machinfo) throws RestaurantSearchException ;
 
-	public CustomerFavRestaurants seachCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
+	public CustomerFavRestaurants searchCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
 	
 	public RestaurantMenus retrieveARestaurantMenus(Integer restaurantId) throws RestaurantSearchException;
 	
