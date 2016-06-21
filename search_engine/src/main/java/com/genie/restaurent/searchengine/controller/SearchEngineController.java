@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.Menu;
-import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
@@ -26,16 +25,17 @@ public class SearchEngineController {
 
 	@RequestMapping(value = "/nearbyRestaurants", method = RequestMethod.GET)
 	public RestaurantsAndMenus searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
-			@RequestParam(value = "longtitude") Double longtitude) throws RestaurantSearchException {
+			@RequestParam(value = "longtitude") Double longtitude, @RequestParam(value = "machinfo") String machInfo)
+			throws RestaurantSearchException {
 
-		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude);
+		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude, machInfo);
 		return response;
 	}
 
 	@RequestMapping(value = "/zipcodeBasedRestaurants", method = RequestMethod.GET)
-	public RestaurantsAndMenus searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode)
-			throws RestaurantSearchException {
-		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode);
+	public RestaurantsAndMenus searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode,
+			@RequestParam(value = "machinfo") String machInfo) throws RestaurantSearchException {
+		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode, machInfo);
 		return response;
 	}
 
@@ -56,7 +56,7 @@ public class SearchEngineController {
 	@RequestMapping(value = "/restaurantMenu", method = RequestMethod.GET)
 	public List<Menu> retrieveAllAvailableMenusForTheRestaurant(
 			@RequestParam(value = "restaurantId") Integer restaurantId) throws RestaurantSearchException {
-		
+
 		return null;
 	}
 
@@ -66,10 +66,12 @@ public class SearchEngineController {
 		return null;
 	}
 
-	@RequestMapping(value="/reviews", method=RequestMethod.GET)
-	public Reviews retrieveReviews(@RequestParam(value="restaurantId") Integer restaurantId) throws RestaurantSearchException {
+	@RequestMapping(value = "/reviews", method = RequestMethod.GET)
+	public Reviews retrieveReviews(@RequestParam(value = "restaurantId") Integer restaurantId)
+			throws RestaurantSearchException {
 		return null;
 	}
+
 	@ExceptionHandler(RestaurantSearchException.class)
 	public String exceptionHandler(RestaurantSearchException exception) {
 		return "Failed";

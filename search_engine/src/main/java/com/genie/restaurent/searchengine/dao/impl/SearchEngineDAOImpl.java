@@ -60,7 +60,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(gogenieDataSource);
 	}
 
-	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude)
+	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude, String machinfo)
 			throws RestaurantSearchException {
 		/**
 		 * Call the stored proc to retreive near by restaurants and menus in
@@ -78,7 +78,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		// Load the data into elastic search
 		URI elasticSearchURI = null;
 		try {
-			elasticSearchURI = new URI("http:localhost:9200/gogenie/");
+			elasticSearchURI = new URI("http:localhost:9200/gogenie/" + machinfo + "/");
 			HttpEntity<RestaurantsAndMenus> request = new HttpEntity<RestaurantsAndMenus>(populateHeaders());
 			ResponseEntity response = restTemplate.exchange(elasticSearchURI, HttpMethod.POST, request,
 					ResponseEntity.class);
@@ -108,7 +108,8 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	 * and longitude for the input zipcode.
 	 * 
 	 */
-	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode) throws RestaurantSearchException {
+	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode, String machinfo)
+			throws RestaurantSearchException {
 
 		// call the stored proc to get the latitude and longitude for the input
 		// postal code.
@@ -129,7 +130,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 			if (locationdetails != null && !locationdetails.isEmpty()) {
 				Double latitude = locationdetails.get(0);
 				Double longitude = locationdetails.get(1);
-				nearbyRestaurants = retrieveRestaurantsByLocation(latitude, longitude);
+				nearbyRestaurants = retrieveRestaurantsByLocation(latitude, longitude, machinfo);
 			}
 		} catch (Exception e) {
 			throw new RestaurantSearchException(e, "retrieveRestaurantsByPostalCode");

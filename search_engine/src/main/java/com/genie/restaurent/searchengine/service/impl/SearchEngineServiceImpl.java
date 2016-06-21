@@ -27,14 +27,16 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 		return response;
 	}
 
-	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude)
+	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude, String machinfo)
 			throws RestaurantSearchException {
-		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByLocation(latitude, longitude);
+		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByLocation(latitude, longitude,
+				machinfo);
 		return nearbyRestaurants;
 	}
 
-	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode) throws RestaurantSearchException {
-		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByPostalCode(zipCode);
+	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode, String machinfo)
+			throws RestaurantSearchException {
+		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByPostalCode(zipCode, machinfo);
 		return nearbyRestaurants;
 	}
 

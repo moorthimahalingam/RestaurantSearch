@@ -10,9 +10,9 @@ import com.genie.restaurent.searchengine.model.Reviews;
 
 public interface SearchEngineDAO {
 
-	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude) throws RestaurantSearchException;
+	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude,String machinfo) throws RestaurantSearchException;
 
-	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String PostalCode) throws RestaurantSearchException;
+	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode, String machinfo) throws RestaurantSearchException;
 
 	public CustomerFavRestaurants listCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
 	
