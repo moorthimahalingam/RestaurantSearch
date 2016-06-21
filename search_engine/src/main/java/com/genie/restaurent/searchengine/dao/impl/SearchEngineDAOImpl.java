@@ -37,6 +37,7 @@ import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.util.RestaurantMenuExtractor;
 import com.genie.restaurent.searchengine.service.util.RestaurantResultExtractor;
+import com.genie.restaurent.searchengine.service.util.RestaurantReviewsExtractor;
 
 @Named
 @Repository
@@ -163,13 +164,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException {
 		List<Reviews> reviews = (List<Reviews>) namedParameterJdbcTemplate.query(
 				"{call get_resturant_reviews(:restaurantId)}",
-				new MapSqlParameterSource().addValue("restaurantId", restaurantId),
-				new ResultSetExtractor<List<Reviews>>() {
-
-					public List<Reviews> extractData(ResultSet rs) throws SQLException, DataAccessException {
-						return null;
-					}
-				});
+				new MapSqlParameterSource().addValue("restaurantId", restaurantId),new RestaurantReviewsExtractor());
 		return reviews;
 	}
 
