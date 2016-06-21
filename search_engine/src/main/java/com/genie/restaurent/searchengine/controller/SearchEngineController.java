@@ -25,17 +25,17 @@ public class SearchEngineController {
 	SearchEngineService searchEngineService;
 
 	@RequestMapping(value = "/nearbyRestaurants", method = RequestMethod.GET)
-	public NearbyRestaurants searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
+	public RestaurantsAndMenus searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
 			@RequestParam(value = "longtitude") Double longtitude) throws RestaurantSearchException {
 
-		NearbyRestaurants response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude);
+		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude);
 		return response;
 	}
 
 	@RequestMapping(value = "/zipcodeBasedRestaurants", method = RequestMethod.GET)
-	public NearbyRestaurants searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode)
+	public RestaurantsAndMenus searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode)
 			throws RestaurantSearchException {
-		NearbyRestaurants response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode);
+		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode);
 		return response;
 	}
 

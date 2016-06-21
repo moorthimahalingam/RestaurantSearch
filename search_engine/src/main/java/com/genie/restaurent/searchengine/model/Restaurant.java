@@ -30,7 +30,7 @@ public class Restaurant implements Serializable {
 	@JsonProperty("minimumorder")
 	private Integer minimumorder;
 	@JsonProperty("delivery_fee")
-	private Integer deliveryFee;
+	private Double deliveryFee;
 	@JsonProperty("restaurant_description")
 	private String restaurantDescription;
 	@JsonProperty("rating")
@@ -41,8 +41,12 @@ public class Restaurant implements Serializable {
 	private Double distance;
 	@JsonProperty("cuisine_id")
 	private Integer cuisineId;
+	@JsonProperty("cuisine_name")
+	private String cuisineName;
 	@JsonProperty("menu")
 	private List<Menu> menus = new ArrayList<Menu>();
+	@JsonProperty("isActive")
+	private Integer activeFlag;
 	
 	@JsonProperty("menu")
 	public List<Menu> getMenus() {
@@ -157,7 +161,7 @@ public class Restaurant implements Serializable {
 	 * @return The deliveryFee
 	 */
 	@JsonProperty("delivery_fee")
-	public Integer getDeliveryFee() {
+	public Double getDeliveryFee() {
 		return deliveryFee;
 	}
 
@@ -167,7 +171,7 @@ public class Restaurant implements Serializable {
 	 *            The delivery_fee
 	 */
 	@JsonProperty("delivery_fee")
-	public void setDeliveryFee(Integer deliveryFee) {
+	public void setDeliveryFee(Double deliveryFee) {
 		this.deliveryFee = deliveryFee;
 	}
 
@@ -266,6 +270,26 @@ public class Restaurant implements Serializable {
 		this.cuisineId = cuisineId;
 	}
 
+	@JsonProperty("cuisine_name")
+	public String getCuisineName() {
+		return cuisineName;
+	}
+
+	@JsonProperty("cuisine_name")
+	public void setCuisineName(String cuisineName) {
+		this.cuisineName = cuisineName;
+	}
+
+	@JsonProperty("isActive")
+	public Integer getActiveFlag() {
+		return activeFlag;
+	}
+
+	@JsonProperty("isActive")
+	public void setActiveFlag(Integer activeFlag) {
+		this.activeFlag = activeFlag;
+	}
+	
 	@JsonAnyGetter
 	public Map<String, Object> getAdditionalProperties() {
 		return this.additionalProperties;

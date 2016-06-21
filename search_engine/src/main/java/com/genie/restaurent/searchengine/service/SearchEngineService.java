@@ -4,17 +4,15 @@ import java.util.List;
 
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
-import com.genie.restaurent.searchengine.model.Menu;
-import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 
 public interface SearchEngineService {
 	
-	public NearbyRestaurants retrieveNearByRestaurantsByLocation(Double latitude, Double longitude) throws RestaurantSearchException ;
+	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude) throws RestaurantSearchException ;
 	
-	public NearbyRestaurants retrieveNearByRestaurantsByZipCode(String zipCode) throws RestaurantSearchException ;
+	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode) throws RestaurantSearchException ;
 
 	public CustomerFavRestaurants seachCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
 	

@@ -4,16 +4,15 @@ import java.util.List;
 
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
-import com.genie.restaurent.searchengine.model.Menu;
-import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
+import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 
 public interface SearchEngineDAO {
 
-	public NearbyRestaurants retrieveRestaurantsByLocation(Double latitude, Double longitude) throws RestaurantSearchException;
+	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude) throws RestaurantSearchException;
 
-	public NearbyRestaurants retrieveRestaurantsByPostalCode(String PostalCode) throws RestaurantSearchException;
+	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String PostalCode) throws RestaurantSearchException;
 
 	public CustomerFavRestaurants listCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
 	

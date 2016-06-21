@@ -2,16 +2,56 @@ package com.genie.restaurent.searchengine.service.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import com.genie.restaurent.searchengine.model.Menu;
+import com.genie.restaurent.searchengine.model.Restaurant;
+import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 
-public class RestaurantResultExtractor implements ResultSetExtractor<Object> {
 
-	public Object extractData(ResultSet rs) throws SQLException, DataAccessException {
-		// TODO Auto-generated method stub
-		return null;
+public class RestaurantResultExtractor implements ResultSetExtractor<RestaurantsAndMenus> {
+
+	public RestaurantsAndMenus extractData(ResultSet rs) throws SQLException, DataAccessException {
+		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+		while (rs.next()) {
+			Restaurant restaurant = new Restaurant();
+			restaurant.setRestaurantId(rs.getInt("RESTAURANT_ID"));
+			restaurant.setName(rs.getString("RESTAURANT_NAME"));
+			restaurant.setActiveFlag(rs.getInt("RESTAURANT_ISACTIVE"));
+			restaurant.setCuisineId(rs.getInt("CUISINE_ID"));
+			restaurant.setCuisineName(rs.getString("CUISINE_NAME"));
+			restaurant.setRating(rs.getInt("RATING"));
+			restaurant.setPricingCategory(rs.getInt("PRICING_CATEGORY"));
+			restaurant.setDeliveryFee(rs.getDouble("DELIVERY_FEE"));
+			restaurant.setDistance(rs.getDouble("DISTANCE"));
+			String menuItems = rs.getString("MENU_ITEMS");
+			if (menuItems != null && menuItems.trim().length() >0) {
+				List <Menu> restaurantMenus = new ArrayList<Menu>();
+				List<String> menulist = Arrays.asList(rs.getString("MENU_ITEMS").split(","));
+				for (String menu : menulist) {
+					Menu restaurantMenu = new Menu();
+					List<String> menuDetails = Arrays.asList(menu.split(":"));
+					restaurantMenu.setItemId(Integer.getInteger(menuDetails.get(0)));
+					restaurantMenu.setItemName(menuDetails.get(1));
+					restaurantMenus.add(restaurantMenu);
+					restaurantMenu = null;
+				}
+				restaurant.setMenus(restaurantMenus);
+				restaurants.add(restaurant);
+			}
+		}
+		RestaurantsAndMenus restaurantsAndMenus = null;
+		if (restaurants != null && restaurants.size() > 0) {
+			restaurantsAndMenus = new RestaurantsAndMenus();
+			restaurantsAndMenus.setRestaurants(restaurants);
+		}
+		return restaurantsAndMenus;
 	}
-
+	
 }
+

@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
-import com.genie.restaurent.searchengine.model.Menu;
-import com.genie.restaurent.searchengine.model.NearbyRestaurants;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
+import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
@@ -28,14 +27,14 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 		return response;
 	}
 
-	public NearbyRestaurants retrieveNearByRestaurantsByLocation(Double latitude, Double longitude)
+	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude)
 			throws RestaurantSearchException {
-		NearbyRestaurants nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByLocation(latitude, longitude);
+		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByLocation(latitude, longitude);
 		return nearbyRestaurants;
 	}
 
-	public NearbyRestaurants retrieveNearByRestaurantsByZipCode(String zipCode) throws RestaurantSearchException {
-		NearbyRestaurants nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByPostalCode(zipCode);
+	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode) throws RestaurantSearchException {
+		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByPostalCode(zipCode);
 		return nearbyRestaurants;
 	}
 

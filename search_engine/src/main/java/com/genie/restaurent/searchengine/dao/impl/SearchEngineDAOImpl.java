@@ -1,5 +1,7 @@
 package com.genie.restaurent.searchengine.dao.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,9 +10,15 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,17 +26,19 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.RestTemplate;
 
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
-import com.genie.restaurent.searchengine.model.Menu;
-import com.genie.restaurent.searchengine.model.NearbyRestaurants;
+import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
+import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.util.RestaurantMenuExtractor;
 import com.genie.restaurent.searchengine.service.util.RestaurantResultExtractor;
 
+@Named
 @Repository
 public class SearchEngineDAOImpl implements SearchEngineDAO {
 
@@ -41,13 +51,16 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	@Resource
 	private DataSource gogenieDataSource;
 
+	@Resource
+	private RestTemplate restTemplate;
+
 	@PostConstruct
 	private void setupJdbcTemplate() {
 		jdbcTemplate = new JdbcTemplate(gogenieDataSource);
 		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(gogenieDataSource);
 	}
 
-	public NearbyRestaurants retrieveRestaurantsByLocation(Double latitude, Double longitude)
+	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude)
 			throws RestaurantSearchException {
 		/**
 		 * Call the stored proc to retreive near by restaurants and menus in
@@ -58,24 +71,36 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		SqlParameterSource inputParam = new MapSqlParameterSource().addValue("mylat", latitude)
 				.addValue("mylon", longitude).addValue("dist", 3);
 
-		namedParameterJdbcTemplate.query("{call get_restaurant_and_menus_by_dist(:mylat, :mylon, :dist)}", inputParam,
+		RestaurantsAndMenus restaurantsAndMenus = (RestaurantsAndMenus) namedParameterJdbcTemplate.query(
+				"{call get_restaurant_by_distance(:mylat, :mylon, :dist)}", inputParam,
 				new RestaurantResultExtractor());
 
 		// Load the data into elastic search
+		URI elasticSearchURI = null;
+		try {
+			elasticSearchURI = new URI("http:localhost:9200/gogenie/");
+			HttpEntity<RestaurantsAndMenus> request = new HttpEntity<RestaurantsAndMenus>(populateHeaders());
+			ResponseEntity response = restTemplate.exchange(elasticSearchURI, HttpMethod.POST, request,
+					ResponseEntity.class);
+			if (response.getStatusCode() != null && response.getStatusCode().equals(HttpStatus.ACCEPTED)) {
+				List<Restaurant> restaurants = restaurantsAndMenus.getRestaurants();
+				for (Restaurant restaurant : restaurants) {
+					// Menus are not required for UI at initial level
+					restaurant.setMenus(null);
+				}
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 
-		// Call another stored proc to retrieve only near by restaurants,
-		// cuisine
+		return restaurantsAndMenus;
+	}
 
-		NearbyRestaurants nearbyRestaurants = (NearbyRestaurants) namedParameterJdbcTemplate.query(
-				"{call get_restaurant_by_distance (:mylat, :mylon, :dist)}", inputParam,
-				new ResultSetExtractor<Object>() {
-
-					public Object extractData(ResultSet rs) throws SQLException, DataAccessException {
-						return null;
-					}
-				});
-
-		return nearbyRestaurants;
+	private HttpHeaders populateHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("accept", "application/json");
+		headers.set("content-Type", "application/json");
+		return headers;
 	}
 
 	/**
@@ -83,12 +108,12 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	 * and longitude for the input zipcode.
 	 * 
 	 */
-	public NearbyRestaurants retrieveRestaurantsByPostalCode(String postalCode) throws RestaurantSearchException {
+	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode) throws RestaurantSearchException {
 
 		// call the stored proc to get the latitude and longitude for the input
 		// postal code.
 		List<Double> locationdetails = null;
-		NearbyRestaurants nearbyRestaurants = null;
+		RestaurantsAndMenus nearbyRestaurants = null;
 		try {
 			locationdetails = jdbcTemplate.queryForObject("select latitude, longitude from restaurant where zipcode=?",
 					new Object[] { postalCode }, new RowMapper<List<Double>>() {
@@ -129,14 +154,16 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	public RestaurantMenus retrieveMenusForARestaurant(Integer restaurantId) throws RestaurantSearchException {
 		MapSqlParameterSource inputParam = new MapSqlParameterSource();
 		inputParam.addValue("restaurantId", restaurantId);
-		RestaurantMenus menus = (RestaurantMenus)namedParameterJdbcTemplate.query("{call get_restaurant_menu(:restaurantId)}",
-				inputParam, new RestaurantMenuExtractor());
+		RestaurantMenus menus = (RestaurantMenus) namedParameterJdbcTemplate
+				.query("{call get_restaurant_menu(:restaurantId)}", inputParam, new RestaurantMenuExtractor());
 		return menus;
 	}
 
 	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException {
-		List<Reviews> reviews = (List<Reviews>)namedParameterJdbcTemplate.query("{call get_resturant_reviews(:restaurantId)}",
-				new MapSqlParameterSource().addValue("restaurantId", restaurantId), new ResultSetExtractor<List<Reviews>>() {
+		List<Reviews> reviews = (List<Reviews>) namedParameterJdbcTemplate.query(
+				"{call get_resturant_reviews(:restaurantId)}",
+				new MapSqlParameterSource().addValue("restaurantId", restaurantId),
+				new ResultSetExtractor<List<Reviews>>() {
 
 					public List<Reviews> extractData(ResultSet rs) throws SQLException, DataAccessException {
 						return null;
@@ -144,6 +171,5 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 				});
 		return reviews;
 	}
-	
-	
+
 }

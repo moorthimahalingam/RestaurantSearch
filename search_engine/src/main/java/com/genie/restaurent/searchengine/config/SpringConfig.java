@@ -19,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @ComponentScan({"com.gogenie.restaurent.searchengine"})
 public class SpringConfig {
 
+	@Bean(name="restTemplate")
 	public RestTemplate getRestTemplate() {
 		RestTemplate restTemplate = new RestTemplate();
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
