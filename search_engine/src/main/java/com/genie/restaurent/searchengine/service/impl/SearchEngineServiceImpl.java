@@ -7,7 +7,6 @@ import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
@@ -18,7 +17,6 @@ import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
 @Named
-@Service
 public class SearchEngineServiceImpl implements SearchEngineService {
 
 	Logger logger = LoggerFactory.getLogger(SearchEngineServiceImpl.class);

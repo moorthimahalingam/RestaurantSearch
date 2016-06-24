@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -45,14 +46,13 @@ import com.genie.restaurent.searchengine.service.util.RestaurantReviewsExtractor
 @Repository
 public class SearchEngineDAOImpl implements SearchEngineDAO {
 
-	@Inject
-	private JdbcTemplate jdbcTemplate;
-
-	@Inject
-	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
 	@Resource
 	private DataSource gogenieDataSource;
+	
+//	@Inject
+	private JdbcTemplate jdbcTemplate;
+	
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Resource
 	private RestTemplate restTemplate;
@@ -60,8 +60,9 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	Logger logger = LoggerFactory.getLogger(SearchEngineDAOImpl.class);
 
 	@PostConstruct
-	private void setupJdbcTemplate() {
+	public void initialize() {
 		logger.debug("Entering into setupJdbcTemplate()");
+		logger.debug("Data Source value is : {}" , gogenieDataSource);
 		jdbcTemplate = new JdbcTemplate(gogenieDataSource);
 		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(gogenieDataSource);
 		logger.debug("Exiting from setupJdbcTemplate()");
