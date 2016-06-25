@@ -1,6 +1,8 @@
 package com.genie.restaurent.searchengine.model;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +30,7 @@ public class Restaurant implements Serializable {
 	@JsonProperty("subscribtion_code")
 	private String subscribtionCode;
 	@JsonProperty("minimumorder")
-	private Integer minimumorder;
+	private Double minimumorder;
 	@JsonProperty("delivery_fee")
 	private Double deliveryFee;
 	@JsonProperty("restaurant_description")
@@ -43,6 +45,8 @@ public class Restaurant implements Serializable {
 	private Integer cuisineId;
 	@JsonProperty("cuisine_name")
 	private String cuisineName;
+	@JsonProperty("landmark")
+	private String landMark;
 	@JsonProperty("menu")
 	private List<Menu> menus = new ArrayList<Menu>();
 	@JsonProperty("isActive")
@@ -142,7 +146,7 @@ public class Restaurant implements Serializable {
 	 * @return The minimumorder
 	 */
 	@JsonProperty("minimumorder")
-	public Integer getMinimumorder() {
+	public Double getMinimumorder() {
 		return minimumorder;
 	}
 
@@ -152,7 +156,7 @@ public class Restaurant implements Serializable {
 	 *            The minimumorder
 	 */
 	@JsonProperty("minimumorder")
-	public void setMinimumorder(Integer minimumorder) {
+	public void setMinimumorder(Double minimumorder) {
 		this.minimumorder = minimumorder;
 	}
 
@@ -290,6 +294,80 @@ public class Restaurant implements Serializable {
 		this.activeFlag = activeFlag;
 	}
 	
+	@JsonProperty("landmark")
+	public String getLandMark() {
+		return landMark;
+	}
+
+	@JsonProperty("landmark")
+	public void setLandMark(String landMark) {
+		this.landMark = landMark;
+	}
+	
+	@JsonProperty("imageURL")
+	private String imageURL;
+	@JsonProperty("imageURL")
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	@JsonProperty("imageURL")
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+
+	@JsonProperty("website")
+	private String website;
+	
+	@JsonProperty("website")
+	public String getWebsite() {
+		return website;
+	}
+
+	@JsonProperty("website")
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	@JsonProperty("openingTime")
+	private Time openingTime;
+	
+	@JsonProperty("openingTime")
+	public Time getOpeningTime() {
+		return openingTime;
+	}
+
+	@JsonProperty("openingTime")
+	public void setOpeningTime(Time openingTime) {
+		this.openingTime = openingTime;
+	}
+
+	@JsonProperty("closingTime")
+	private Time closingTime;
+
+	@JsonProperty("closingTime")
+	public Time getClosingTime() {
+		return closingTime;
+	}
+
+	@JsonProperty("closingTime")
+	public void setClosingTime(Time closingTime) {
+		this.closingTime = closingTime;
+	}
+
+	@JsonProperty("basedeliverytime")
+	private Time baseDeliveryTime;
+
+	@JsonProperty("basedeliverytime")
+	public Time getBaseDeliveryTime() {
+		return baseDeliveryTime;
+	}
+
+	@JsonProperty("basedeliverytime")
+	public void setBaseDeliveryTime(Time baseDeliveryTime) {
+		this.baseDeliveryTime = baseDeliveryTime;
+	}
+
 	@JsonAnyGetter
 	public Map<String, Object> getAdditionalProperties() {
 		return this.additionalProperties;

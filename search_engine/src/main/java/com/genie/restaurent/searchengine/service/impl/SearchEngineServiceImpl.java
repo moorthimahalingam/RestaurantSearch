@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
@@ -53,6 +54,14 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 		RestaurantMenus menus = searchEngineDAO.retrieveMenusForARestaurant(restaurantId);
 		logger.debug("Exiting from retrieveARestaurantMenus ");
 		return menus;
+	}
+
+	public List<Restaurant> retrieveRestaurantsForAMenu(Double latitude, Double longitude, String menuItemName)
+			throws RestaurantSearchException {
+		logger.debug("Entering into retrieveRestaurantsForAMenu ");
+		List<Restaurant> restaurants = searchEngineDAO.retrieveRestaurantsForAMenu(latitude, longitude,menuItemName);
+		logger.debug("Exiting from retrieveRestaurantsForAMenu ");
+		return restaurants;
 	}
 
 	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException {

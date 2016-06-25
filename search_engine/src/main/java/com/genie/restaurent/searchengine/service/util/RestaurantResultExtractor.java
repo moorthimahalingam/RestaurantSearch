@@ -22,15 +22,19 @@ public class RestaurantResultExtractor implements ResultSetExtractor<Restaurants
 			Restaurant restaurant = new Restaurant();
 			restaurant.setRestaurantId(rs.getInt("RESTAURANT_ID"));
 			restaurant.setName(rs.getString("RESTAURANT_NAME"));
-			restaurant.setActiveFlag(rs.getInt("RESTAURANT_ISACTIVE"));
 			restaurant.setCuisineId(rs.getInt("CUISINE_ID"));
 			restaurant.setCuisineName(rs.getString("CUISINE_NAME"));
 			restaurant.setRating(rs.getInt("RATING"));
 			restaurant.setPricingCategory(rs.getInt("PRICING_CATEGORY"));
 			restaurant.setDeliveryFee(rs.getDouble("DELIVERY_FEE"));
 			restaurant.setDistance(rs.getDouble("DISTANCE"));
+			restaurant.setMinimumorder(rs.getDouble("MINIMUM_ORDER_VAL_DELIVERY"));
+			restaurant.setWebsite(rs.getString("RESTAURANT_WEBSITE"));
+			restaurant.setOpeningTime(rs.getTime("RESTAURANT_OPENINGTIME"));
+			restaurant.setClosingTime(rs.getTime("RESTAURANT_CLOSINGTIME"));
+			restaurant.setBaseDeliveryTime(rs.getTime("BASE_DELIVERY_TIME"));
 			String menuItems = rs.getString("MENU_ITEMS");
-			if (menuItems != null && menuItems.trim().length() >0) {
+			if (menuItems != null && menuItems.trim().length() > 0) {
 				List <Menu> restaurantMenus = new ArrayList<Menu>();
 				List<String> menulist = Arrays.asList(rs.getString("MENU_ITEMS").split(","));
 				for (String menu : menulist) {
@@ -42,8 +46,8 @@ public class RestaurantResultExtractor implements ResultSetExtractor<Restaurants
 					restaurantMenu = null;
 				}
 				restaurant.setMenus(restaurantMenus);
-				restaurants.add(restaurant);
 			}
+			restaurants.add(restaurant);
 		}
 		RestaurantsAndMenus restaurantsAndMenus = null;
 		if (restaurants != null && restaurants.size() > 0) {

@@ -41,6 +41,7 @@ import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.util.RestaurantMenuExtractor;
 import com.genie.restaurent.searchengine.service.util.RestaurantResultExtractor;
 import com.genie.restaurent.searchengine.service.util.RestaurantReviewsExtractor;
+import com.genie.restaurent.searchengine.service.util.RestaurantsForAMenuExtractor;
 
 @Named
 @Repository
@@ -48,10 +49,10 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 
 	@Resource
 	private DataSource gogenieDataSource;
-	
-//	@Inject
+
+	// @Inject
 	private JdbcTemplate jdbcTemplate;
-	
+
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Resource
@@ -62,7 +63,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	@PostConstruct
 	public void initialize() {
 		logger.debug("Entering into setupJdbcTemplate()");
-		logger.debug("Data Source value is : {}" , gogenieDataSource);
+		logger.debug("Data Source value is : {}", gogenieDataSource);
 		jdbcTemplate = new JdbcTemplate(gogenieDataSource);
 		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(gogenieDataSource);
 		logger.debug("Exiting from setupJdbcTemplate()");
@@ -93,11 +94,10 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 			URI elasticSearchURI = null;
 			try {
 				logger.debug("Before load this restaurants and menu details in elastic search");
-				elasticSearchURI = new URI("http:localhost:9200/gogenie/" + machinfo + "/");
+				elasticSearchURI = new URI("http://localhost:9200/gogenie/" + machinfo + "/");
 				HttpEntity<RestaurantsAndMenus> request = new HttpEntity<RestaurantsAndMenus>(populateHeaders());
 				ResponseEntity response = restTemplate.exchange(elasticSearchURI, HttpMethod.POST, request,
 						ResponseEntity.class);
-
 				HttpStatus statusCode = response.getStatusCode();
 				logger.debug("Status code retured after load the data into elastic search {} ", statusCode.name());
 				if (statusCode != null && statusCode.equals(HttpStatus.ACCEPTED)) {
@@ -192,25 +192,44 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		logger.debug("Retrive menus for a restaurant {} ", restaurantId);
 		RestaurantMenus menus = (RestaurantMenus) namedParameterJdbcTemplate
 				.query("{call get_restaurant_menu(:restaurantId)}", inputParam, new RestaurantMenuExtractor());
-		
+
 		if (menus != null) {
 			logger.debug("List of available menus in the restaurant {} is  {}", restaurantId, menus.toString());
 		}
-		
+
 		logger.debug("Exiting from retrieveMenusForARestaurant()");
 		return menus;
 	}
 
+	public List<Restaurant> retrieveRestaurantsForAMenu(Double latitude, Double longitude, String menuItemName)
+			throws RestaurantSearchException {
+		logger.debug("Entering into retrieveRestaurantsForAMenu()");
+		MapSqlParameterSource inputParam = new MapSqlParameterSource();
+		inputParam.addValue("mylat", latitude);
+		inputParam.addValue("mylon", longitude);
+		inputParam.addValue("dist", 10);
+		inputParam.addValue("menuItem", menuItemName);
+		logger.debug("Retrive Restaurants for a menu {} ", menuItemName);
+		List<Restaurant> restaurants = (List<Restaurant>) namedParameterJdbcTemplate.query(
+				"{call get_restaurants_have_this_menu(:mylat, :mylon, :dist, :menuItem)}", inputParam,
+				new RestaurantsForAMenuExtractor());
+		if (restaurants != null) {
+			logger.debug("List of available restaurants for the menu {} is  {}", menuItemName, restaurants.toString());
+		}
+		logger.debug("Exiting from retrieveRestaurantsForAMenu()");
+		return restaurants;
+	}
+
 	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException {
 		logger.debug("Entering into retrieveReviews()");
-		
+
 		List<Reviews> reviews = (List<Reviews>) namedParameterJdbcTemplate.query(
 				"{call get_resturant_reviews(:restaurantId)}",
 				new MapSqlParameterSource().addValue("restaurantId", restaurantId), new RestaurantReviewsExtractor());
 		if (reviews != null && !reviews.isEmpty()) {
-			logger.debug("Reviews count for the input restaurant id {} is {} " , restaurantId, reviews.size());
+			logger.debug("Reviews count for the input restaurant id {} is {} ", restaurantId, reviews.size());
 		}
-		
+
 		logger.debug("Exiting from retrieveReviews()");
 		return reviews;
 	}

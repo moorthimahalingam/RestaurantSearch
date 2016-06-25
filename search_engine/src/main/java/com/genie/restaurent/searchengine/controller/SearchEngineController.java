@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
 import com.genie.restaurent.searchengine.model.Menu;
+import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
@@ -30,14 +31,14 @@ public class SearchEngineController {
 
 	@RequestMapping(value = "/nearbyRestaurants", method = RequestMethod.GET)
 	public RestaurantsAndMenus searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
-			@RequestParam(value = "longtitude") Double longtitude, @RequestParam(value = "machinfo") String machInfo)
+			@RequestParam(value = "longitude") Double longitude, @RequestParam(value = "machinfo") String machInfo)
 			throws RestaurantSearchException {
 		logger.debug("Entering into searchNearByRestaurantsByLocation ()");
 		logger.debug("Request received from the machine {} ", machInfo);
-		logger.debug("Search restaurants based on lat {} , lon {} ", latitude, longtitude);
-		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longtitude,
+		logger.debug("Search restaurants based on lat {} , lon {} ", latitude, longitude);
+		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByLocation(latitude, longitude,
 				machInfo);
-		logger.debug("Restaurants around the lat {} and lon {}  are {}", latitude, longtitude, response.toString());
+		logger.debug("Restaurans around the lat {} and lon {}  are {}", latitude, longitude, response);
 		logger.debug("Exiting from searchNearByRestaurantsByLocation ()");
 		return response;
 	}
@@ -72,8 +73,10 @@ public class SearchEngineController {
 		logger.debug("Entering into retrieveAllAvailableMenusForTheRestaurant()");
 		logger.debug("Before retrieve the menus for the restaurant {}", restaurantId);
 		RestaurantMenus restautantMenus = searchEngineService.retrieveARestaurantMenus(restaurantId);
-		logger.debug("After retrieve the menus for the restaurant {} are {} ", restaurantId,
-				restautantMenus.toString());
+		if (restautantMenus != null) {
+			logger.debug("After retrieve the menus for the restaurant {} are {} ", restaurantId,
+					restautantMenus.toString());
+		}
 		logger.debug("Exiting from retrieveAllAvailableMenusForTheRestaurant()");
 		return restautantMenus;
 	}
@@ -84,17 +87,22 @@ public class SearchEngineController {
 		logger.debug("Entering into retrieveReviews()");
 		logger.debug("Before retrieve the reviews for the restaurant {} ", restaurantId);
 		List<Reviews> reviews = searchEngineService.retrieveReviews(restaurantId);
-		logger.debug("After retrieve the reviews for the restaurant {} are {}", restaurantId, reviews.toString());
+		if (reviews != null && !reviews.isEmpty()) {
+			logger.debug("After retrieve the reviews for the restaurant {} are {}", restaurantId, reviews.toString());
+		}
 		logger.debug("Exiting from retrieveReviews()");
 		return reviews;
 	}
 
 	@RequestMapping(value = "/restaurantsForAMenu", method = RequestMethod.GET)
-	public String retrieveAllRestaurantForAMenu(@RequestParam(value = "menuName") String menuName)
+	public List<Restaurant> retrieveAllRestaurantsForAMenu(@RequestParam(value = "menuName") String menuName,
+			@RequestParam(value = "latitude") Double latitude,
+			@RequestParam(value = "longitude") Double longitude)
 			throws RestaurantSearchException {
-		logger.debug("Entering into retrieveAllRestaurantForAMenu()");
-		logger.debug("Exiting from retrieveAllRestaurantForAMenu()");
-		return null;
+		logger.debug("Entering into retrieveAllRestaurantsForAMenu()");
+		List<Restaurant> restaurants= searchEngineService.retrieveRestaurantsForAMenu(latitude, longitude, menuName);
+		logger.debug("Exiting from retrieveAllRestaurantsForAMenu()");
+		return restaurants;
 	}
 
 	@RequestMapping(value = "/populateMenus", method = RequestMethod.GET)
