@@ -11,19 +11,19 @@ import com.genie.restaurent.searchengine.model.Reviews;
 
 public interface SearchEngineDAO {
 
-	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude, String machinfo)
+	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude, String machinfo, Long customerId)
 			throws RestaurantSearchException;
 
-	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode, String machinfo)
+	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode, String machinfo, Long customerId)
 			throws RestaurantSearchException;
 
-	public CustomerFavRestaurants listCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
+	public CustomerFavRestaurants listCustomerFavRestaurants(Long customerId) throws RestaurantSearchException;
 
-	public RestaurantMenus retrieveMenusForARestaurant(Integer restaurantId) throws RestaurantSearchException;
+	public RestaurantMenus retrieveMenusForARestaurant(Long restaurantId) throws RestaurantSearchException;
 
 	public List<Restaurant> retrieveRestaurantsForAMenu(Double latitude, Double longitude, String menuItemName)
 			throws RestaurantSearchException;
 
-	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException;
+	public List<Reviews> retrieveReviews(Long restaurantId) throws RestaurantSearchException;
 
 }

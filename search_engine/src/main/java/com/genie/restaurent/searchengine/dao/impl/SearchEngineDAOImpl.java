@@ -69,8 +69,8 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		logger.debug("Exiting from setupJdbcTemplate()");
 	}
 
-	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude, String machinfo)
-			throws RestaurantSearchException {
+	public RestaurantsAndMenus retrieveRestaurantsByLocation(Double latitude, Double longitude, String machinfo,
+			Long customerId) throws RestaurantSearchException {
 		logger.debug("Entering into retrieveRestaurantsByLocation()");
 		/**
 		 * Call the stored proc to retreive near by restaurants and menus in
@@ -78,42 +78,73 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		 * search bar.
 		 */
 		Integer distance = 10;
-		SqlParameterSource inputParam = new MapSqlParameterSource().addValue("mylat", latitude)
-				.addValue("mylon", longitude).addValue("dist", distance);
-		logger.debug("Before retrieve the restaurants and menus nearby this location lat {} , lon {} and distance {} ",
-				latitude, longitude, distance);
-		RestaurantsAndMenus restaurantsAndMenus = (RestaurantsAndMenus) namedParameterJdbcTemplate.query(
-				"{call get_restaurant_by_distance(:mylat, :mylon, :dist)}", inputParam,
-				new RestaurantResultExtractor());
+		RestaurantsAndMenus restaurantsAndMenus = null;
+		try {
 
-		if (restaurantsAndMenus != null) {
-			logger.debug("Retrieved the restaurants and menus nearby this location are {} ",
-					restaurantsAndMenus.toString());
+			SqlParameterSource inputParam = new MapSqlParameterSource().addValue("mylat", latitude)
+					.addValue("mylon", longitude).addValue("dist", distance);
+			logger.debug(
+					"Before retrieve the restaurants and menus nearby this location lat {} , lon {} and distance {} ",
+					latitude, longitude, distance);
+			restaurantsAndMenus = (RestaurantsAndMenus) namedParameterJdbcTemplate.query(
+					"{call get_restaurant_by_distance(:mylat, :mylon, :dist)}", inputParam,
+					new RestaurantResultExtractor());
 
-			// Load the data into elastic search
-			URI elasticSearchURI = null;
-			try {
-				logger.debug("Before load this restaurants and menu details in elastic search");
-				elasticSearchURI = new URI("http://localhost:9200/gogenie/" + machinfo + "/");
-				HttpEntity<RestaurantsAndMenus> request = new HttpEntity<RestaurantsAndMenus>(populateHeaders());
-				ResponseEntity response = restTemplate.exchange(elasticSearchURI, HttpMethod.POST, request,
-						ResponseEntity.class);
-				HttpStatus statusCode = response.getStatusCode();
-				logger.debug("Status code retured after load the data into elastic search {} ", statusCode.name());
-				if (statusCode != null && statusCode.equals(HttpStatus.ACCEPTED)) {
-					logger.debug("Before suppress the menu details from each restaurant");
-					List<Restaurant> restaurants = restaurantsAndMenus.getRestaurants();
-					for (Restaurant restaurant : restaurants) {
-						// Menus are not required for UI at initial level
-						restaurant.setMenus(null);
+			if (restaurantsAndMenus != null) {
+				logger.debug("Retrieved the restaurants and menus nearby this location are {} ",
+						restaurantsAndMenus.toString());
+
+				// Load the data into elastic search
+				URI elasticSearchURI = null;
+				try {
+					logger.debug("Before load this restaurants and menu details in elastic search");
+
+					if (customerId != null) {
+						logger.debug("Customer has logged in . So, insert will happen based on their id {}",
+								customerId);
+						elasticSearchURI = new URI("http://localhost:9200/gogenie/" + customerId + "/");
+					} else {
+						logger.debug("Customer id is null. So, insert will happen based on the machinfo {}", machinfo);
+						elasticSearchURI = new URI("http://localhost:9200/gogenie/" + machinfo + "/");
 					}
-					logger.debug("Restaurant details after suppress the menu details are  {} ",
-							restaurantsAndMenus.toString());
-				}
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
 
+					HttpEntity<RestaurantsAndMenus> request = new HttpEntity<RestaurantsAndMenus>(populateHeaders());
+					ResponseEntity response = restTemplate.exchange(elasticSearchURI, HttpMethod.POST, request,
+							ResponseEntity.class);
+					HttpStatus statusCode = response.getStatusCode();
+					logger.debug("Status code retured after load the data into elastic search {} ", statusCode.name());
+					/*
+					 * if (statusCode != null &&
+					 * statusCode.equals(HttpStatus.ACCEPTED)) { logger.debug(
+					 * "Before suppress the menu details from each restaurant");
+					 * List<Restaurant> restaurants =
+					 * restaurantsAndMenus.getRestaurants(); for (Restaurant
+					 * restaurant : restaurants) { // Menus are not required for
+					 * UI at initial level restaurant.setMenus(null); }
+					 * logger.debug(
+					 * "Restaurant details after suppress the menu details are  {} "
+					 * , restaurantsAndMenus.toString()); }
+					 */
+				} catch (URISyntaxException e) {
+					logger.error("Error while inserting restaurant and menu details into Elastic search");
+					e.printStackTrace();
+				}
+				// Go ahead proceed with sending response back to UI even there
+				// is an error in Elastic search
+				logger.debug("Before suppress the menu details from each restaurant");
+				List<Restaurant> restaurants = restaurantsAndMenus.getRestaurants();
+				for (Restaurant restaurant : restaurants) {
+					// Menus are not required for UI at initial level
+					restaurant.setMenus(null);
+				}
+				logger.debug("Restaurant details after suppress the menu details are  {} ",
+						restaurantsAndMenus.toString());
+			} else {
+				restaurantsAndMenus = new RestaurantsAndMenus();
+				restaurantsAndMenus.setAdditionalProperty("Error", "Menus are not available in this restaurant");
+			}
+		} catch (Exception e) {
+			throw new RestaurantSearchException(e, "retrieveRestaurantsByLocation");
 		}
 
 		logger.debug("Exiting from retrieveRestaurantsByLocation()");
@@ -134,7 +165,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	 * and longitude for the input zipcode.
 	 * 
 	 */
-	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode, String machinfo)
+	public RestaurantsAndMenus retrieveRestaurantsByPostalCode(String postalCode, String machinfo, Long customerId)
 			throws RestaurantSearchException {
 		logger.debug("Entering into retrieveRestaurantsByPostalCode()");
 		// call the stored proc to get the latitude and longitude for the input
@@ -159,7 +190,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 				Double latitude = locationdetails.get(0);
 				Double longitude = locationdetails.get(1);
 				logger.debug("Latitude is {} and longitude is {} for the zipcode ", latitude, longitude, postalCode);
-				nearbyRestaurants = retrieveRestaurantsByLocation(latitude, longitude, machinfo);
+				nearbyRestaurants = retrieveRestaurantsByLocation(latitude, longitude, machinfo, customerId);
 				logger.debug("Successfully retrieved the nearby restaurants for the above location");
 
 			}
@@ -170,7 +201,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		return nearbyRestaurants;
 	}
 
-	public CustomerFavRestaurants listCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException {
+	public CustomerFavRestaurants listCustomerFavRestaurants(Long customerId) throws RestaurantSearchException {
 		logger.debug("Entering into listCustomerFavRestaurants()");
 
 		CustomerFavRestaurants customerFavRestaurants = namedParameterJdbcTemplate.query(
@@ -185,7 +216,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		return customerFavRestaurants;
 	}
 
-	public RestaurantMenus retrieveMenusForARestaurant(Integer restaurantId) throws RestaurantSearchException {
+	public RestaurantMenus retrieveMenusForARestaurant(Long restaurantId) throws RestaurantSearchException {
 		logger.debug("Entering into retrieveMenusForARestaurant()");
 		MapSqlParameterSource inputParam = new MapSqlParameterSource();
 		inputParam.addValue("restaurantId", restaurantId);
@@ -220,7 +251,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		return restaurants;
 	}
 
-	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException {
+	public List<Reviews> retrieveReviews(Long restaurantId) throws RestaurantSearchException {
 		logger.debug("Entering into retrieveReviews()");
 
 		List<Reviews> reviews = (List<Reviews>) namedParameterJdbcTemplate.query(

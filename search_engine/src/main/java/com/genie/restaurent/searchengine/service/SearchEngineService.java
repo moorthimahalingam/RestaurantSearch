@@ -10,16 +10,19 @@ import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 import com.genie.restaurent.searchengine.model.Reviews;
 
 public interface SearchEngineService {
-	
-	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude, String machinfo) throws RestaurantSearchException ;
-	
-	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode,String machinfo) throws RestaurantSearchException ;
 
-	public CustomerFavRestaurants searchCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException;
-	
-	public RestaurantMenus retrieveARestaurantMenus(Integer restaurantId) throws RestaurantSearchException;
-	
-	public List<Restaurant> retrieveRestaurantsForAMenu(Double latitude, Double longitude, String  menuItemName) throws RestaurantSearchException;
-	
-	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException;
+	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude, String machinfo, Long customerId)
+			throws RestaurantSearchException;
+
+	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode, String machinfo, Long customerId)
+			throws RestaurantSearchException;
+
+	public CustomerFavRestaurants searchCustomerFavRestaurants(Long customerId) throws RestaurantSearchException;
+
+	public RestaurantMenus retrieveARestaurantMenus(Long restaurantId) throws RestaurantSearchException;
+
+	public List<Restaurant> retrieveRestaurantsForAMenu(Double latitude, Double longitude, String menuItemName)
+			throws RestaurantSearchException;
+
+	public List<Reviews> retrieveReviews(Long restaurantId) throws RestaurantSearchException;
 }

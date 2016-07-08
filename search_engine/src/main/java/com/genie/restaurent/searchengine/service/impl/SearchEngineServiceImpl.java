@@ -25,31 +25,31 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 	@Inject
 	SearchEngineDAO searchEngineDAO;
 
-	public CustomerFavRestaurants searchCustomerFavRestaurants(Integer customerId) throws RestaurantSearchException {
+	public CustomerFavRestaurants searchCustomerFavRestaurants(Long customerId) throws RestaurantSearchException {
 		logger.debug("Entering into searchCustomerFavRestaurants ");
 		CustomerFavRestaurants response = searchEngineDAO.listCustomerFavRestaurants(customerId);
 		logger.debug("Exiting from searchCustomerFavRestaurants ");
 		return response;
 	}
 
-	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude, String machinfo)
+	public RestaurantsAndMenus retrieveNearByRestaurantsByLocation(Double latitude, Double longitude, String machinfo, Long customerId)
 			throws RestaurantSearchException {
 		logger.debug("Entering into retrieveNearByRestaurantsByLocation ");
 		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByLocation(latitude, longitude,
-				machinfo);
+				machinfo, customerId);
 		logger.debug("Exiting from retrieveNearByRestaurantsByLocation ");
 		return nearbyRestaurants;
 	}
 
-	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode, String machinfo)
+	public RestaurantsAndMenus retrieveNearByRestaurantsByZipCode(String zipCode, String machinfo, Long customerId)
 			throws RestaurantSearchException {
 		logger.debug("Entering into retrieveNearByRestaurantsByZipCode ");
-		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByPostalCode(zipCode, machinfo);
+		RestaurantsAndMenus nearbyRestaurants = searchEngineDAO.retrieveRestaurantsByPostalCode(zipCode, machinfo, customerId);
 		logger.debug("Exiting from retrieveNearByRestaurantsByZipCode ");
 		return nearbyRestaurants;
 	}
 
-	public RestaurantMenus retrieveARestaurantMenus(Integer restaurantId) throws RestaurantSearchException {
+	public RestaurantMenus retrieveARestaurantMenus(Long restaurantId) throws RestaurantSearchException {
 		logger.debug("Entering into retrieveARestaurantMenus ");
 		RestaurantMenus menus = searchEngineDAO.retrieveMenusForARestaurant(restaurantId);
 		logger.debug("Exiting from retrieveARestaurantMenus ");
@@ -64,7 +64,7 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 		return restaurants;
 	}
 
-	public List<Reviews> retrieveReviews(Integer restaurantId) throws RestaurantSearchException {
+	public List<Reviews> retrieveReviews(Long restaurantId) throws RestaurantSearchException {
 		logger.debug("Entering into retrieveReviews");
 		List<Reviews> reviews = searchEngineDAO.retrieveReviews(restaurantId);
 		logger.debug("Exiting from retrieveReviews");
