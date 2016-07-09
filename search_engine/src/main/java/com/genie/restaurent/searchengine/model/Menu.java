@@ -45,8 +45,8 @@ public class Menu implements Serializable {
 	private Integer cuisineId;
 	@JsonProperty("cuisine_name")
 	private String cuisineName;
-	@JsonProperty("is_liked")
-	private String isLiked;
+	@JsonProperty("likes")
+	private Integer likes;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -339,9 +339,9 @@ public class Menu implements Serializable {
 	 * 
 	 * @return The isLiked
 	 */
-	@JsonProperty("is_liked")
-	public String getIsLiked() {
-		return isLiked;
+	@JsonProperty("likes")
+	public Integer getLikes() {
+		return likes;
 	}
 
 	/**
@@ -349,9 +349,9 @@ public class Menu implements Serializable {
 	 * @param isLiked
 	 *            The is_liked
 	 */
-	@JsonProperty("is_liked")
-	public void setIsLiked(String isLiked) {
-		this.isLiked = isLiked;
+	@JsonProperty("likes")
+	public void setLikes(Integer likes) {
+		this.likes = likes;
 	}
 
 	@JsonAnyGetter

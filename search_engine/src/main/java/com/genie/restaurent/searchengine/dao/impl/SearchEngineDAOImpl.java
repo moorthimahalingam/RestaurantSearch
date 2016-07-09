@@ -64,8 +64,8 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	public void initialize() {
 		logger.debug("Entering into setupJdbcTemplate()");
 		logger.debug("Data Source value is : {}", gogenieDataSource);
-		jdbcTemplate = new JdbcTemplate(gogenieDataSource);
-		namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(gogenieDataSource);
+		this.jdbcTemplate = new JdbcTemplate(this.gogenieDataSource);
+		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(this.gogenieDataSource);
 		logger.debug("Exiting from setupJdbcTemplate()");
 	}
 
@@ -91,11 +91,16 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 					new RestaurantResultExtractor());
 
 			if (restaurantsAndMenus != null) {
+				restaurantsAndMenus.setCustomerId(customerId);
+				restaurantsAndMenus.setMachinfo(machinfo);
 				logger.debug("Retrieved the restaurants and menus nearby this location are {} ",
 						restaurantsAndMenus.toString());
 
 				// Load the data into elastic search
 				URI elasticSearchURI = null;
+				
+				boolean elasticInsertFailed = false;
+				
 				try {
 					logger.debug("Before load this restaurants and menu details in elastic search");
 
@@ -125,23 +130,30 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 					 * "Restaurant details after suppress the menu details are  {} "
 					 * , restaurantsAndMenus.toString()); }
 					 */
-				} catch (URISyntaxException e) {
+				} catch (Exception e) {
 					logger.error("Error while inserting restaurant and menu details into Elastic search");
+					elasticInsertFailed = true;
 					e.printStackTrace();
 				}
-				// Go ahead proceed with sending response back to UI even there
-				// is an error in Elastic search
-				logger.debug("Before suppress the menu details from each restaurant");
+				// Share all the details if elastic insert is failed. Else send only restaurant detail
+				
+				
 				List<Restaurant> restaurants = restaurantsAndMenus.getRestaurants();
-				for (Restaurant restaurant : restaurants) {
-					// Menus are not required for UI at initial level
-					restaurant.setMenus(null);
+				if (!elasticInsertFailed) {
+					logger.debug("Before suppress the menu details from each restaurant");
+					for (Restaurant restaurant : restaurants) {
+						// Menus are not required for UI at initial level
+						restaurant.setMenus(null);
+					}
+					logger.debug("All the menus have been suppressed from each restaurant");
 				}
-				logger.debug("Restaurant details after suppress the menu details are  {} ",
-						restaurantsAndMenus.toString());
+				
+				logger.debug("Restaurant details are  {} ", restaurantsAndMenus.toString());
 			} else {
 				restaurantsAndMenus = new RestaurantsAndMenus();
-				restaurantsAndMenus.setAdditionalProperty("Error", "Menus are not available in this restaurant");
+				restaurantsAndMenus.setCustomerId(customerId);
+				restaurantsAndMenus.setMachinfo(machinfo);
+				restaurantsAndMenus.setAdditionalProperty("Error", "Restaurants are not available nearby this location");
 			}
 		} catch (Exception e) {
 			throw new RestaurantSearchException(e, "retrieveRestaurantsByLocation");
@@ -152,11 +164,11 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	}
 
 	private HttpHeaders populateHeaders() {
-		logger.debug("Entering into setupJdbcTemplate()");
+		logger.debug("Entering into populateHeaders()");
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("accept", "application/json");
 		headers.set("content-Type", "application/json");
-		logger.debug("Exiting from setupJdbcTemplate()");
+		logger.debug("Exiting from populateHeaders()");
 		return headers;
 	}
 
@@ -174,7 +186,19 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		RestaurantsAndMenus nearbyRestaurants = null;
 		try {
 			logger.debug("Before retrieve the latitude and longitude for the zipCode {} ", postalCode);
-			locationdetails = jdbcTemplate.queryForObject("select latitude, longitude from restaurant where zipcode=?",
+			SqlParameterSource inputParam = new MapSqlParameterSource().addValue("zipcode", postalCode);
+			locationdetails = namedParameterJdbcTemplate.query("{call get_zipcode_latlong(:zipcode)}", inputParam, new ResultSetExtractor<List<Double>>() {
+				public List<Double> extractData(ResultSet rs) throws SQLException, DataAccessException {
+					List<Double> resultList = new ArrayList<Double>();
+					while (rs.next()) {
+						resultList.add(rs.getDouble("latitude"));
+						resultList.add(rs.getDouble("longitude"));
+					}
+					return resultList;
+				}
+			});
+			
+			/*locationdetails = jdbcTemplate.queryForObject("select latitude, longitude from zipcode where zipcode=?",
 					new Object[] { postalCode }, new RowMapper<List<Double>>() {
 
 						public List<Double> mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -184,7 +208,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 							return resultList;
 						}
 
-					});
+					});*/
 
 			if (locationdetails != null && !locationdetails.isEmpty()) {
 				Double latitude = locationdetails.get(0);

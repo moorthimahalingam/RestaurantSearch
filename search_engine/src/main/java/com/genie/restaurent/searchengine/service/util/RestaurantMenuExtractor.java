@@ -19,6 +19,8 @@ public class RestaurantMenuExtractor implements ResultSetExtractor<RestaurantMen
 		while (rs.next()) {
 			restaurantMenus.setRestaurantId(rs.getInt("RESTAURANT_ID"));
 			restaurantMenus.setRestaurantName(rs.getString("RESTAURANT_NAME"));
+			restaurantMenus.setCuisineId(rs.getInt("CUISINE_ID"));
+			restaurantMenus.setCuisineName(rs.getString("CUISINE_NAME"));
 			Menu menu = new Menu();
 			menu.setItemId(rs.getInt("MENU_ITEM_ID"));
 			menu.setItemName(rs.getString("MENU_ITEM_NAME"));
@@ -30,19 +32,20 @@ public class RestaurantMenuExtractor implements ResultSetExtractor<RestaurantMen
 			menu.setIsflagshipItem(rs.getInt("IS_FLAGSHIP_ITEM"));
 			menu.setImageURL(rs.getString("IMAGEURL"));
 			menu.setIsItemAvailable(rs.getInt("IS_ITEM_AVAILABLE"));
-			menu.setCuisineId(rs.getInt("CUISINE_ID"));
-			menu.setCuisineName(rs.getString("CUISINE_NAME"));
+//			menu.setCuisineId(rs.getInt("CUISINE_ID"));
+//			menu.setCuisineName(rs.getString("CUISINE_NAME"));
 			menu.setCategoryId(rs.getInt("MENU_CATEGORY_ID"));
 			menu.setCategoryName(rs.getString("MENU_CATEGORY_NAME"));
-			menu.setCustomerId(rs.getInt("CUST_ID"));
-			menu.setIsLiked(rs.getString("IS_LIKED"));
+//			menu.setCustomerId(rs.getInt("CUST_ID"));
+			menu.setLikes(rs.getInt("NUMBER_OF_LIKES"));
 			menus.add(menu);
 		}
 		if (menus != null && menus.size() > 0) {
 			restaurantMenus.setMenus(menus);
-		} else {
+		} 
+		/*else {
 			restaurantMenus = null;
-		}
+		}*/
 		return restaurantMenus;
 	}
 

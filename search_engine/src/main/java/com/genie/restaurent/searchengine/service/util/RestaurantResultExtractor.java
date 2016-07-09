@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import com.genie.restaurent.searchengine.model.Cuisine;
 import com.genie.restaurent.searchengine.model.Menu;
 import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
@@ -18,10 +19,14 @@ public class RestaurantResultExtractor implements ResultSetExtractor<Restaurants
 
 	public RestaurantsAndMenus extractData(ResultSet rs) throws SQLException, DataAccessException {
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+		List<Cuisine> cuisines = new ArrayList<Cuisine>();
 		while (rs.next()) {
 			Restaurant restaurant = new Restaurant();
+			Cuisine cuisine = new Cuisine();
 			restaurant.setRestaurantId(rs.getInt("RESTAURANT_ID"));
 			restaurant.setName(rs.getString("RESTAURANT_NAME"));
+			cuisine.setCuisineId(rs.getInt("CUISINE_ID"));
+			cuisine.setName(rs.getString("CUISINE_NAME"));
 			restaurant.setCuisineId(rs.getInt("CUISINE_ID"));
 			restaurant.setCuisineName(rs.getString("CUISINE_NAME"));
 			restaurant.setRating(rs.getInt("RATING"));
@@ -48,10 +53,12 @@ public class RestaurantResultExtractor implements ResultSetExtractor<Restaurants
 				restaurant.setMenus(restaurantMenus);
 			}
 			restaurants.add(restaurant);
+			cuisines.add(cuisine);
 		}
 		RestaurantsAndMenus restaurantsAndMenus = null;
 		if (restaurants != null && restaurants.size() > 0) {
 			restaurantsAndMenus = new RestaurantsAndMenus();
+			restaurantsAndMenus.setCuisines(cuisines);
 			restaurantsAndMenus.setRestaurants(restaurants);
 		}
 		return restaurantsAndMenus;

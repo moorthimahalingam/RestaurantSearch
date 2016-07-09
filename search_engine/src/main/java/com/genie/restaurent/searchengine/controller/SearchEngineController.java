@@ -30,9 +30,8 @@ public class SearchEngineController {
 
 	@RequestMapping(value = "/nearbyRestaurants", method = RequestMethod.GET)
 	public RestaurantsAndMenus searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
-			@RequestParam(value = "longitude") Double longitude, 
-			@RequestParam(value = "machinfo") String machInfo, @RequestParam(value="customer_id") Long customerId)
-			throws RestaurantSearchException {
+			@RequestParam(value = "longitude") Double longitude, @RequestParam(value = "machinfo") String machInfo,
+			@RequestParam(value = "customer_id", required = false) Long customerId) throws RestaurantSearchException {
 		logger.debug("Entering into searchNearByRestaurantsByLocation ()");
 		logger.debug("Request received from the machine {} ", machInfo);
 		logger.debug("Search restaurants based on lat {} , lon {} ", latitude, longitude);
@@ -45,12 +44,13 @@ public class SearchEngineController {
 
 	@RequestMapping(value = "/zipcodeBasedRestaurants", method = RequestMethod.GET)
 	public RestaurantsAndMenus searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode,
-			@RequestParam(value = "machinfo") String machInfo,
-			@RequestParam(value="customer_id") Long customerId) throws RestaurantSearchException {
+			@RequestParam(value = "machinfo") String machInfo, @RequestParam(value = "customer_id") Long customerId)
+			throws RestaurantSearchException {
 		logger.debug("Entering into searchRestaurantsByZipCode()");
 		logger.debug("Request received from the machine {} ", machInfo);
 		logger.debug("Search restaurants for the zipcode {}", zipcode);
-		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode, machInfo, customerId);
+		RestaurantsAndMenus response = searchEngineService.retrieveNearByRestaurantsByZipCode(zipcode, machInfo,
+				customerId);
 		logger.debug("Restaurants around the zipcode {} are {}", zipcode, response.toString());
 		logger.debug("Exiting from searchRestaurantsByZipCode() ");
 		return response;

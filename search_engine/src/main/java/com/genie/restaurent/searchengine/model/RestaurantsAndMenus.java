@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RestaurantsAndMenus {
 	@JsonProperty("customer_id")
-	private String customerId;
+	private Long customerId;
 	@JsonProperty("machinfo")
 	private String machinfo;
 	@JsonProperty("cuisines")
@@ -28,7 +28,7 @@ public class RestaurantsAndMenus {
 	 * @return The customerId
 	 */
 	@JsonProperty("customer_id")
-	public String getCustomerId() {
+	public Long getCustomerId() {
 		return customerId;
 	}
 
@@ -38,7 +38,7 @@ public class RestaurantsAndMenus {
 	 *            The customer_id
 	 */
 	@JsonProperty("customer_id")
-	public void setCustomerId(String customerId) {
+	public void setCustomerId(Long customerId) {
 		this.customerId = customerId;
 	}
 
