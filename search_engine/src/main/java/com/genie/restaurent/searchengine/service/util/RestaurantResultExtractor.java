@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -17,7 +19,10 @@ import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
 
 public class RestaurantResultExtractor implements ResultSetExtractor<RestaurantsAndMenus> {
 
+	Logger logger = LoggerFactory.getLogger(RestaurantResultExtractor.class);
+	
 	public RestaurantsAndMenus extractData(ResultSet rs) throws SQLException, DataAccessException {
+		logger.debug("Entering into extractData() ");
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
 		List<Cuisine> cuisines = new ArrayList<Cuisine>();
 		while (rs.next()) {
@@ -40,12 +45,14 @@ public class RestaurantResultExtractor implements ResultSetExtractor<Restaurants
 			restaurant.setBaseDeliveryTime(rs.getTime("BASE_DELIVERY_TIME"));
 			String menuItems = rs.getString("MENU_ITEMS");
 			if (menuItems != null && menuItems.trim().length() > 0) {
+				logger.debug("Menu items  {} " , menuItems.toString());
 				List <Menu> restaurantMenus = new ArrayList<Menu>();
-				List<String> menulist = Arrays.asList(rs.getString("MENU_ITEMS").split(","));
+				List<String> menulist = Arrays.asList(menuItems.split(","));
+				logger.debug("Menu list  {} " , menulist.toString());
 				for (String menu : menulist) {
 					Menu restaurantMenu = new Menu();
 					List<String> menuDetails = Arrays.asList(menu.split(":"));
-					restaurantMenu.setItemId(Integer.getInteger(menuDetails.get(0)));
+					restaurantMenu.setItemId(new Integer(menuDetails.get(0)));
 					restaurantMenu.setItemName(menuDetails.get(1));
 					restaurantMenus.add(restaurantMenu);
 					restaurantMenu = null;
@@ -61,6 +68,7 @@ public class RestaurantResultExtractor implements ResultSetExtractor<Restaurants
 			restaurantsAndMenus.setCuisines(cuisines);
 			restaurantsAndMenus.setRestaurants(restaurants);
 		}
+		logger.debug("Entering into extractData() ");
 		return restaurantsAndMenus;
 	}
 	
