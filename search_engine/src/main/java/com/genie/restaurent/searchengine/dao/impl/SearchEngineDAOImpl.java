@@ -97,6 +97,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 						restaurantsAndMenus.toString());
 
 				// Load the data into elastic search
+				String elasticURL = "http://localhost:9200/gogeniedb/restaurantMenuSearch/";
 				URI elasticSearchURI = null;
 				
 				boolean elasticInsertFailed = false;
@@ -107,10 +108,10 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 					if (customerId != null) {
 						logger.debug("Customer has logged in . So, insert will happen based on their id {}",
 								customerId);
-						elasticSearchURI = new URI("http://localhost:9200/gogenie/" + customerId + "/");
+						elasticSearchURI = new URI(elasticURL + customerId + "/");
 					} else {
 						logger.debug("Customer id is null. So, insert will happen based on the machinfo {}", machinfo);
-						elasticSearchURI = new URI("http://localhost:9200/gogenie/" + machinfo + "/");
+						elasticSearchURI = new URI(elasticURL + machinfo + "/");
 					}
 
 					HttpEntity<RestaurantsAndMenus> request = new HttpEntity<RestaurantsAndMenus>(populateHeaders());
