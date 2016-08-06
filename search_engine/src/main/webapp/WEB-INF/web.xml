@@ -49,5 +49,16 @@
 	<url-pattern>/service/*</url-pattern>
 </servlet-mapping>
 
+<filter>
+    <filter-name>restaurantSearchCROSFilter</filter-name>
+    <filter-class>
+        com.genie.restaurent.searchengine.controller.RestaurantSearchCROSFilter
+    </filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>restaurantSearchCROSFilter</filter-name>
+    <url-pattern>/service/*</url-pattern>
+</filter-mapping>
+
 </web-app>
 

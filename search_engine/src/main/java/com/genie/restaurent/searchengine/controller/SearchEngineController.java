@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +21,6 @@ import com.genie.restaurent.searchengine.model.Reviews;
 import com.genie.restaurent.searchengine.service.SearchEngineService;
 
 @RestController
-@CrossOrigin(origins="http://localhost:8181" , maxAge=3600)
 public class SearchEngineController {
 
 	@Inject
@@ -30,7 +28,6 @@ public class SearchEngineController {
 
 	Logger logger = LoggerFactory.getLogger(SearchEngineController.class);
 
-	
 	@RequestMapping(value = "/nearbyRestaurants", method = RequestMethod.GET)
 	public RestaurantsAndMenus searchNearByRestaurantsByLocation(@RequestParam(value = "latitude") Double latitude,
 			@RequestParam(value = "longitude") Double longitude, @RequestParam(value = "machinfo") String machInfo,
@@ -49,7 +46,7 @@ public class SearchEngineController {
 
 	@RequestMapping(value = "/zipcodeBasedRestaurants", method = RequestMethod.GET)
 	public RestaurantsAndMenus searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode,
-			@RequestParam(value = "machinfo") String machInfo, @RequestParam(value = "customer_id") Long customerId)
+			@RequestParam(value = "machinfo") String machInfo, @RequestParam(value = "customerId") Long customerId)
 			throws RestaurantSearchException {
 		logger.debug("Entering into searchRestaurantsByZipCode()");
 		logger.debug("Request received from the machine {} ", machInfo);
