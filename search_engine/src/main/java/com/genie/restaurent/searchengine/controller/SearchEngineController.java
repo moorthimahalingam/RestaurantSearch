@@ -46,7 +46,7 @@ public class SearchEngineController {
 
 	@RequestMapping(value = "/zipcodeBasedRestaurants", method = RequestMethod.GET)
 	public RestaurantsAndMenus searchRestaurantsByZipCode(@RequestParam(value = "zipcode") String zipcode,
-			@RequestParam(value = "machinfo") String machInfo, @RequestParam(value = "customerId") Long customerId)
+			@RequestParam(value = "machinfo") String machInfo, @RequestParam(value = "customer_id" , required = false) Long customerId)
 			throws RestaurantSearchException {
 		logger.debug("Entering into searchRestaurantsByZipCode()");
 		logger.debug("Request received from the machine {} ", machInfo);
@@ -59,7 +59,7 @@ public class SearchEngineController {
 	}
 
 	@RequestMapping(value = "/fav_restaurant", method = RequestMethod.GET)
-	public CustomerFavRestaurants listFavRestaurantForCustomer(@RequestParam(value = "customerId") Long customerId)
+	public CustomerFavRestaurants listFavRestaurantForCustomer(@RequestParam(value = "customer_id") Long customerId)
 			throws RestaurantSearchException {
 		logger.debug("Entering into listFavRestaurantForCustomer()");
 		logger.debug("Favorite restaurant for the customer {} ", customerId);
@@ -71,7 +71,7 @@ public class SearchEngineController {
 
 	@RequestMapping(value = "/restaurantMenu", method = RequestMethod.GET)
 	public RestaurantMenus retrieveAllAvailableMenusForTheRestaurant(
-			@RequestParam(value = "restaurantId") Long restaurantId) throws RestaurantSearchException {
+			@RequestParam(value = "restaurant_id") Long restaurantId) throws RestaurantSearchException {
 		logger.debug("Entering into retrieveAllAvailableMenusForTheRestaurant()");
 		logger.debug("Before retrieve the menus for the restaurant {}", restaurantId);
 		RestaurantMenus restautantMenus = searchEngineService.retrieveARestaurantMenus(restaurantId);
@@ -84,7 +84,7 @@ public class SearchEngineController {
 	}
 
 	@RequestMapping(value = "/reviews", method = RequestMethod.GET)
-	public List<Reviews> retrieveReviews(@RequestParam(value = "restaurantId") Long restaurantId)
+	public List<Reviews> retrieveReviews(@RequestParam(value = "restaurant_id") Long restaurantId)
 			throws RestaurantSearchException {
 		logger.debug("Entering into retrieveReviews()");
 		logger.debug("Before retrieve the reviews for the restaurant {} ", restaurantId);

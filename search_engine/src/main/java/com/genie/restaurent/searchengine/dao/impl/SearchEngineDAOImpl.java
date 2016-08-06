@@ -232,7 +232,6 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		CustomerFavRestaurants customerFavRestaurants = namedParameterJdbcTemplate.query(
 				"{call get_cust_fav_restaurant(:cust_id)}", new MapSqlParameterSource().addValue("cust_id", customerId),
 				new ResultSetExtractor<CustomerFavRestaurants>() {
-
 					public CustomerFavRestaurants extractData(ResultSet rs) throws SQLException, DataAccessException {
 						return null;
 					}
