@@ -1,7 +1,6 @@
 package com.genie.restaurent.searchengine.dao.impl;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,13 +8,11 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
@@ -53,6 +50,8 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 	// @Inject
 	private JdbcTemplate jdbcTemplate;
 
+	private SimpleJdbcCall jdbcCall;
+	
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Resource
@@ -60,12 +59,13 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 
 	Logger logger = LoggerFactory.getLogger(SearchEngineDAOImpl.class);
 
+	
 	@PostConstruct
 	public void initialize() {
 		logger.debug("Entering into setupJdbcTemplate()");
-		logger.debug("Data Source value is : {}", gogenieDataSource);
 		this.jdbcTemplate = new JdbcTemplate(this.gogenieDataSource);
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(this.gogenieDataSource);
+		this.jdbcCall  = new SimpleJdbcCall(gogenieDataSource);
 		logger.debug("Exiting from setupJdbcTemplate()");
 	}
 
@@ -80,7 +80,6 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		Integer distance = 10;
 		RestaurantsAndMenus restaurantsAndMenus = null;
 		try {
-
 			SqlParameterSource inputParam = new MapSqlParameterSource().addValue("mylat", latitude)
 					.addValue("mylon", longitude).addValue("dist", distance);
 			logger.debug(
@@ -134,7 +133,6 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 				} catch (Exception e) {
 					logger.error("Error while inserting restaurant and menu details into Elastic search");
 					elasticInsertFailed = true;
-					e.printStackTrace();
 				}
 				// Share all the details if elastic insert is failed. Else send only restaurant detail
 				
@@ -188,6 +186,7 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 		try {
 			logger.debug("Before retrieve the latitude and longitude for the zipCode {} ", postalCode);
 			SqlParameterSource inputParam = new MapSqlParameterSource().addValue("zipcode", postalCode);
+			
 			locationdetails = namedParameterJdbcTemplate.query("{call get_zipcode_latlong(:zipcode)}", inputParam, new ResultSetExtractor<List<Double>>() {
 				public List<Double> extractData(ResultSet rs) throws SQLException, DataAccessException {
 					List<Double> resultList = new ArrayList<Double>();

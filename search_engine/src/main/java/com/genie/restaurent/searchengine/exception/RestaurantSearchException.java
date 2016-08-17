@@ -40,6 +40,11 @@ public class RestaurantSearchException extends Exception {
 		this.errorDesc = errDec;
 	}
 	
+	public RestaurantSearchException(String errorCode, String errorMessage) {
+		this.errorCode = errorCode;
+		this.errorDesc = errorMessage;
+	}
+	
 	public RestaurantSearchException(Exception exception, String errorDtl, String errCode,
 			String errDec) {
 		super(errorDtl, exception);
