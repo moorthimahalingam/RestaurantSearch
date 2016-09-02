@@ -19,6 +19,7 @@ public interface SearchEngineConstants {
 	public static final String CUSTOMER_ID="customer_id";
 	public static final String RETRIEVE_CUST_FAV_RESTAURANT="{call get_cust_fav_restaurant(:cust_id)}";
 	public static final String RESTAURANT_ID="restaurantId";
+	public static final String RESTAURANTID="restaurantid";
 	public static final String RESTAU_ID="restaurant_id";
 	public static final String MENU_ITEM = "menuItem";
 	public static final String MENU_NAME = "menuName";
@@ -34,6 +35,14 @@ public interface SearchEngineConstants {
 	public static final String REST_SEARCH_0005_DESC= "Error while retrieving menu available restaurants";
 	public static final String REST_SEARCH_0006= "REST_SEARCH_0006";
 	public static final String REST_SEARCH_0006_DESC= "Error while retrieving restaurant's reviews ";
+	public static final String RESTAURANT_ISACTIVE = "RESTAURANT_ISACTIVE";
+	public static final String MENU_ITEM_ID = "MENU_ITEM_ID";
+	public static final String LIKES_COUNT = "count";
+	public static final String RETRIEVE_RESTRAUNT_ACTIVE_IND = "{call get_restaurant_flag(:restaurantid)}";
+	public static final String REST_SEARCH_0007= "REST_SEARCH_0007";
+	public static final String REST_SEARCH_0007_DESC= "Error while retrieving restaurant's active flag ";
+	public static final String RETRIEVE_RESTRAUNT_MENU_LIKES = "{call get_all_like_counts(:restaurant_id)}";
+	public static final String REST_SEARCH_0008= "REST_SEARCH_0008";
+	public static final String REST_SEARCH_0008_DESC= "Error while retrieving restaurant's menu likes details ";
 
-	
 }

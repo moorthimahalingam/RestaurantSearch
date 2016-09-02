@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.MenuItemLikeDetail;
 import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
@@ -70,5 +71,21 @@ public class SearchEngineServiceImpl implements SearchEngineService {
 		logger.debug("Exiting from retrieveReviews");
 		return reviews;
 	}
+
+	public String retrieveRestaurantActiveFlag(Long restaurantId) throws RestaurantSearchException {
+		logger.debug("Entering into retrieveRestaurantActiveFlag");
+		String flag = searchEngineDAO.retrieveRestaurantActiveFlag(restaurantId);
+		logger.debug("Exiting from retrieveRestaurantActiveFlag");
+		return flag;
+	}
+
+	public List<MenuItemLikeDetail> retrieveLikesCount(Long restaurantId) throws RestaurantSearchException {
+		logger.debug("Entering into retrieveRestaurantActiveFlag");
+		List<MenuItemLikeDetail> menuLikesCount = searchEngineDAO.retrieveLikesCount(restaurantId);
+		logger.debug("Exiting from retrieveRestaurantActiveFlag");
+		return menuLikesCount;
+	}
+	
+	
 
 }

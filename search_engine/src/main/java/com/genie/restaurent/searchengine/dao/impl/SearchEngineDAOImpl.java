@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -32,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import com.genie.restaurent.searchengine.dao.SearchEngineDAO;
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.MenuItemLikeDetail;
 import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
@@ -313,6 +315,73 @@ public class SearchEngineDAOImpl implements SearchEngineDAO {
 
 		logger.debug("Exiting from retrieveReviews()");
 		return reviews;
+	}
+	
+	public String retrieveRestaurantActiveFlag(Long restaurantId) throws RestaurantSearchException {
+		logger.debug("Entering into retrieveRestaurantActiveFlag()");
+		String flag = null;
+		
+		try {
+			flag = namedParameterJdbcTemplate.query(SearchEngineConstants.RETRIEVE_RESTRAUNT_ACTIVE_IND,
+					new MapSqlParameterSource().addValue(SearchEngineConstants.RESTAURANTID, restaurantId), 
+					new ResultSetExtractor<String>() {
+
+				public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+					String activeInd = null;
+					while (rs.next()) {
+						activeInd = rs.getString(SearchEngineConstants.RESTAURANT_ISACTIVE);
+					}
+					return activeInd;
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Error while retrieving restaurant Active flag " , e );
+			throw new RestaurantSearchException(SearchEngineConstants.REST_SEARCH_0007,
+					SearchEngineConstants.REST_SEARCH_0007_DESC);
+		}
+		logger.debug("Exiting from retrieveRestaurantActiveFlag()");
+		return flag;
+	}
+
+	public List<MenuItemLikeDetail> retrieveLikesCount(Long restaurantId) throws RestaurantSearchException {
+		logger.debug("Entering into retrieveLikesCount()");
+		List<MenuItemLikeDetail> menuItemLikesList = null;
+		try {
+			menuItemLikesList = (List<MenuItemLikeDetail>)namedParameterJdbcTemplate.query(SearchEngineConstants.RETRIEVE_RESTRAUNT_MENU_LIKES, 
+					new MapSqlParameterSource().addValue(SearchEngineConstants.RESTAU_ID, restaurantId),
+					new ResultSetExtractor<List<MenuItemLikeDetail>>() {
+				public List<MenuItemLikeDetail> extractData(ResultSet rs) throws SQLException, DataAccessException {
+					List<MenuItemLikeDetail> likesCount = new ArrayList<MenuItemLikeDetail>();
+					while (rs.next()) {
+						MenuItemLikeDetail menuLikes = new MenuItemLikeDetail();
+						menuLikes.setMenuItemId(rs.getInt(SearchEngineConstants.MENU_ITEM_ID));
+						menuLikes.setLikes(rs.getInt(SearchEngineConstants.LIKES_COUNT));
+						likesCount.add(menuLikes);
+					}
+					return likesCount;
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Error while retrieving restaurant's menus likes count " , e );
+			throw new RestaurantSearchException(SearchEngineConstants.REST_SEARCH_0008,
+					SearchEngineConstants.REST_SEARCH_0008_DESC);
+		}
+		logger.debug("Exiting from retrieveLikesCount()");
+		return menuItemLikesList;
+	}
+	
+	/**
+	 * 
+	 * @param errorMessage
+	 * @return
+	 */
+	private void errorMessageHandler(String errorMessage) throws RestaurantSearchException {
+		logger.debug("Entering into errorMessageHandler()");
+		logger.debug("Error message  from DB {} " , errorMessage);
+		String errorMsg[] = errorMessage.split(":");
+		RestaurantSearchException cre = new RestaurantSearchException(errorMsg[0], errorMsg[1]);
+		logger.debug("Exiting from errorMessageHandler()");
+		throw cre;
 	}
 
 }

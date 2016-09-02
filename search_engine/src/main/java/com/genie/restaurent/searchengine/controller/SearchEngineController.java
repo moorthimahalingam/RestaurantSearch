@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.MenuItemLikeDetail;
 import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
@@ -135,7 +136,25 @@ public class SearchEngineController {
 		logger.debug("Exiting from retrieveMenusList()");
 		return null;
 	}
+	
+	@RequestMapping(value = "/restaurantIsActive", method = RequestMethod.GET)
+	public String retrieveRestaurantActiveFlag(@RequestParam(value = SearchEngineConstants.RESTAURANT_ID) Long restaurantId)
+			throws RestaurantSearchException {
+		logger.debug("Entering into retrieveRestaurantActiveFlag()");
+		String activeInd = searchEngineService.retrieveRestaurantActiveFlag(restaurantId);
+		logger.debug("Exiting from retrieveRestaurantActiveFlag()");
+		return activeInd;
+	}
 
+	@RequestMapping(value = "/getMenusLikes", method = RequestMethod.GET)
+	public List<MenuItemLikeDetail> retrieveMenuLikesCount(@RequestParam(value = SearchEngineConstants.RESTAURANT_ID) Long restaurantId)
+			throws RestaurantSearchException {
+		logger.debug("Entering into retrieveRestaurantActiveFlag()");
+		List<MenuItemLikeDetail> menuLikesDetails = searchEngineService.retrieveLikesCount(restaurantId);
+		logger.debug("Exiting from retrieveRestaurantActiveFlag()");
+		return menuLikesDetails;
+	}
+	
 	@ExceptionHandler(RestaurantSearchException.class)
 	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
 	public String exceptionHandler(RestaurantSearchException exception) {

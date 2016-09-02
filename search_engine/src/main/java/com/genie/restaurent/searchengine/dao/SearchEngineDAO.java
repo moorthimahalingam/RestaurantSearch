@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.genie.restaurent.searchengine.exception.RestaurantSearchException;
 import com.genie.restaurent.searchengine.model.CustomerFavRestaurants;
+import com.genie.restaurent.searchengine.model.MenuItemLikeDetail;
 import com.genie.restaurent.searchengine.model.Restaurant;
 import com.genie.restaurent.searchengine.model.RestaurantMenus;
 import com.genie.restaurent.searchengine.model.RestaurantsAndMenus;
@@ -25,5 +26,9 @@ public interface SearchEngineDAO {
 			throws RestaurantSearchException;
 
 	public List<Reviews> retrieveReviews(Long restaurantId) throws RestaurantSearchException;
+	
+	public String retrieveRestaurantActiveFlag(Long restaurantId) throws RestaurantSearchException;
+	
+	public List<MenuItemLikeDetail> retrieveLikesCount(Long restaurantId) throws RestaurantSearchException;
 
 }
